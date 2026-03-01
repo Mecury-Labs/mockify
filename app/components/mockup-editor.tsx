@@ -144,39 +144,41 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
   const hasColors = config.colors.length > 0;
 
   return (
-    <div
-      className="fixed top-6 right-6 z-40 flex flex-col items-center gap-4"
-      style={{ width: 380 }}
-    >
-      {/* Single canvas */}
-      <MockupCanvas
-        ref={canvasRef}
-        position="center"
-        backgroundColor={canvasBg}
-      >
-        {canvasWidth > 0 && (
-          <div
-            style={{
-              transition:
-                "transform 250ms cubic-bezier(0.77, 0, 0.175, 1)",
-              willChange: "transform",
-            }}
+    <>
+      {/* Centered canvas */}
+      <div className="flex justify-center" style={{ paddingRight: 280 }}>
+        <div className="w-full max-w-lg">
+          <MockupCanvas
+            ref={canvasRef}
+            position="center"
+            backgroundColor={canvasBg}
           >
-            <DeviceMockup
-              device={config}
-              width={deviceWidth}
-              color={selectedColor}
-            >
-              <ScreenPlaceholder />
-            </DeviceMockup>
-          </div>
-        )}
-      </MockupCanvas>
+            {canvasWidth > 0 && (
+              <div
+                style={{
+                  transition:
+                    "transform 250ms cubic-bezier(0.77, 0, 0.175, 1)",
+                  willChange: "transform",
+                }}
+              >
+                <DeviceMockup
+                  device={config}
+                  width={deviceWidth}
+                  color={selectedColor}
+                >
+                  <ScreenPlaceholder />
+                </DeviceMockup>
+              </div>
+            )}
+          </MockupCanvas>
+        </div>
+      </div>
 
-      {/* Floating toolbar */}
+      {/* Fixed toolbar on the right */}
       <div
-        className="w-full rounded-xl px-4 py-3 flex flex-wrap items-center gap-4 justify-center"
+        className="fixed top-6 right-6 z-40 rounded-xl px-4 py-4 flex flex-col items-start gap-4"
         style={{
+          width: 240,
           backgroundColor: "#ffffff",
           border: "1px solid #e5e5e5",
           boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
@@ -374,6 +376,6 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 }
