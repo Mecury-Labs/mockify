@@ -89,7 +89,10 @@ export default function Examples() {
             style={{ backgroundColor: "#1d1d1f", color: "#a1a1aa" }}
           >
             <span style={{ color: "#6e6e73" }}>$</span>
-            <span style={{ color: "#e5e5e5" }}>npx mockify add iphone16-pro</span>
+            <span style={{ color: "#c084fc" }}>npx</span>
+            <span style={{ color: "#e5e5e5" }}>mockify</span>
+            <span style={{ color: "#34d399" }}>add</span>
+            <span style={{ color: "#fbbf24" }}>iphone16-pro</span>
           </div>
         </div>
 
