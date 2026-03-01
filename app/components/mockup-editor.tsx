@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { track } from "@vercel/analytics";
 import { toast } from "sonner";
 import DeviceMockup, { type DeviceConfig } from "./device-mockup";
 import MockupCanvas, { type CanvasPosition } from "./mockup-canvas";
@@ -419,6 +420,7 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
                         onClick={() => {
                           setDeviceIndex(i);
                           setDropdownOpen(false);
+                          track("select_device", { device: d.name });
                         }}
                         className="w-full text-left px-3 py-2 text-xs cursor-pointer"
                         style={{

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { track } from "@vercel/analytics";
 import { codeToHtml } from "shiki";
 
 /* ── Icons ── */
@@ -153,8 +154,9 @@ export default function CodeModal({
   const handleCopy = useCallback(async () => {
     await navigator.clipboard.writeText(code);
     setCopied(true);
+    track("copy_code", { tab: activeTab, device: deviceName, color: color ?? "default" });
     setTimeout(() => setCopied(false), 1500);
-  }, [code]);
+  }, [code, activeTab, deviceName, color]);
 
   const html = htmlCache[cacheKey];
 

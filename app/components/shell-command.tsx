@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { track } from "@vercel/analytics";
 
 const CopyIcon = () => (
   <svg
@@ -41,6 +42,7 @@ export default function ShellCommand({ command }: { command: string }) {
   const handleCopy = async () => {
     await navigator.clipboard.writeText(command);
     setCopied(true);
+    track("copy_install_command", { command });
     setTimeout(() => setCopied(false), 1500);
   };
 
