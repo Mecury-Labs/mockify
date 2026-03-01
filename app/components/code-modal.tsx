@@ -249,9 +249,9 @@ export default function CodeModal({
                   </button>
                 </div>
 
-                {/* Tabs — CSS-only indicator, no layoutId */}
+                {/* Tabs — pill button style */}
                 <div
-                  className="relative flex items-center px-5"
+                  className="flex items-center px-5 py-2.5 gap-1"
                   style={{ borderBottom: "1px solid #f0f0f0" }}
                 >
                   {TABS.map((tab) => {
@@ -263,12 +263,13 @@ export default function CodeModal({
                           setActiveTab(tab.id);
                           setCopied(false);
                         }}
-                        className="relative flex items-center gap-1.5 cursor-pointer text-xs font-medium px-3 py-2.5"
+                        className="flex items-center gap-1.5 cursor-pointer text-[11px] font-medium px-3 py-1.5 rounded-lg"
                         style={{
                           color: isActive ? "#1d1d1f" : "#a1a1aa",
-                          backgroundColor: "transparent",
+                          backgroundColor: isActive ? "#f0f0f0" : "transparent",
                           border: "none",
-                          transition: "color 150ms ease",
+                          transition:
+                            "color 200ms ease, background-color 200ms ease",
                         }}
                       >
                         <span
@@ -278,7 +279,7 @@ export default function CodeModal({
                             height: 18,
                             backgroundColor: isActive
                               ? "#1d1d1f"
-                              : "#f0f0f0",
+                              : "#e5e5e5",
                             color: isActive ? "#ffffff" : "#a1a1aa",
                             transition:
                               "background-color 200ms ease, color 200ms ease",
@@ -290,22 +291,6 @@ export default function CodeModal({
                       </button>
                     );
                   })}
-
-                  {/* Sliding indicator — positioned via CSS transform, no layout animation */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: 0,
-                      left: 20,
-                      height: 2,
-                      width: 60,
-                      backgroundColor: "#1d1d1f",
-                      borderRadius: 1,
-                      transform: `translateX(${activeIndex * 80}px)`,
-                      transition:
-                        "transform 250ms cubic-bezier(0.23, 1, 0.32, 1)",
-                    }}
-                  />
                 </div>
 
                 {/* Code area — fixed height, content crossfades */}
