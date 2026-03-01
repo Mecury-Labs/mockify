@@ -249,7 +249,7 @@ export default function CodeModal({
                   </button>
                 </div>
 
-                {/* Tabs — pill button style */}
+                {/* Tabs — shared element pill */}
                 <div
                   className="flex items-center px-5 py-2.5 gap-1"
                   style={{ borderBottom: "1px solid #f0f0f0" }}
@@ -263,17 +263,30 @@ export default function CodeModal({
                           setActiveTab(tab.id);
                           setCopied(false);
                         }}
-                        className="flex items-center gap-1.5 cursor-pointer text-[11px] font-medium px-3 py-1.5 rounded-lg"
+                        className="relative flex items-center gap-1.5 cursor-pointer text-[11px] font-medium px-3 py-1.5 rounded-lg"
                         style={{
                           color: isActive ? "#1d1d1f" : "#a1a1aa",
-                          backgroundColor: isActive ? "#f0f0f0" : "transparent",
+                          backgroundColor: "transparent",
                           border: "none",
-                          transition:
-                            "color 200ms ease, background-color 200ms ease",
+                          transition: "color 200ms ease",
+                          zIndex: 1,
                         }}
                       >
+                        {/* Shared element pill background */}
+                        {isActive && (
+                          <motion.div
+                            layoutId="code-modal-tab-pill"
+                            className="absolute inset-0 rounded-lg"
+                            style={{ backgroundColor: "#f0f0f0", zIndex: -1 }}
+                            transition={{
+                              type: "spring",
+                              duration: 0.35,
+                              bounce: 0.15,
+                            }}
+                          />
+                        )}
                         <span
-                          className="flex items-center justify-center rounded-full text-[10px] font-semibold"
+                          className="relative flex items-center justify-center rounded-full text-[10px] font-semibold"
                           style={{
                             width: 18,
                             height: 18,
@@ -287,7 +300,7 @@ export default function CodeModal({
                         >
                           {tab.step}
                         </span>
-                        {tab.label}
+                        <span className="relative">{tab.label}</span>
                       </button>
                     );
                   })}
