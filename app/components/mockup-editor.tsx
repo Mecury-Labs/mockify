@@ -146,127 +146,186 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
   return (
     <>
       {/* Centered canvas */}
-      <div className="flex justify-center" style={{ paddingRight: 280 }}>
-        <div className="w-full max-w-lg">
-          <MockupCanvas
-            ref={canvasRef}
-            position="center"
-            backgroundColor={canvasBg}
-          >
-            {canvasWidth > 0 && (
-              <div
-                style={{
-                  transition:
-                    "transform 250ms cubic-bezier(0.77, 0, 0.175, 1)",
-                  willChange: "transform",
-                }}
-              >
-                <DeviceMockup
-                  device={config}
-                  width={deviceWidth}
-                  color={selectedColor}
-                >
-                  <ScreenPlaceholder />
-                </DeviceMockup>
-              </div>
-            )}
-          </MockupCanvas>
-        </div>
-      </div>
-
-      {/* Fixed toolbar on the right */}
-      <div
-        className="fixed top-6 right-6 z-40 rounded-xl px-4 py-4 flex flex-col items-start gap-4"
-        style={{
-          width: 240,
-          backgroundColor: "#ffffff",
-          border: "1px solid #e5e5e5",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-        }}
-      >
-        {/* Device selector dropdown */}
-        <div className="relative" ref={dropdownRef}>
-          <button
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex items-center gap-1.5 cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium"
-            style={{
-              backgroundColor: "#f5f5f7",
-              color: "#1d1d1f",
-              transition:
-                "background-color 150ms ease",
-            }}
-          >
-            {current.name}
-            <ChevronIcon open={dropdownOpen} />
-          </button>
-
-          {dropdownOpen && (
+      <div className="mx-auto w-full max-w-lg">
+        <MockupCanvas
+          ref={canvasRef}
+          position="center"
+          backgroundColor={canvasBg}
+        >
+          {canvasWidth > 0 && (
             <div
-              className="absolute bottom-full left-0 mb-2 w-56 rounded-xl overflow-hidden"
               style={{
-                backgroundColor: "#ffffff",
-                border: "1px solid #e5e5e5",
-                boxShadow:
-                  "0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)",
-                maxHeight: 320,
-                overflowY: "auto",
-                zIndex: 50,
+                transition:
+                  "transform 250ms cubic-bezier(0.77, 0, 0.175, 1)",
+                willChange: "transform",
               }}
             >
-              {devices.map((d, i) => {
-                const isActive = i === deviceIndex;
-                return (
-                  <button
-                    key={d.name}
-                    onClick={() => {
-                      setDeviceIndex(i);
-                      setDropdownOpen(false);
-                    }}
-                    className="w-full text-left px-3 py-2 text-xs cursor-pointer"
-                    style={{
-                      backgroundColor: isActive ? "#f5f5f7" : "transparent",
-                      color: isActive ? "#1d1d1f" : "#6e6e73",
-                      fontWeight: isActive ? 600 : 400,
-                      transition: "background-color 150ms ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive)
-                        (e.currentTarget.style.backgroundColor = "#fafafa");
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = isActive
-                        ? "#f5f5f7"
-                        : "transparent";
-                    }}
-                  >
-                    {d.name}
-                  </button>
-                );
-              })}
+              <DeviceMockup
+                device={config}
+                width={deviceWidth}
+                color={selectedColor}
+              >
+                <ScreenPlaceholder />
+              </DeviceMockup>
             </div>
           )}
+        </MockupCanvas>
+      </div>
+
+      {/* Fixed sidebar panel on the right */}
+      <div
+        className="fixed top-6 right-6 z-40 rounded-2xl flex flex-col"
+        style={{
+          width: 220,
+          backgroundColor: "#ffffff",
+          border: "1px solid #e5e5e5",
+          boxShadow:
+            "0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04)",
+        }}
+      >
+        {/* Device selector */}
+        <div className="px-4 py-3" ref={dropdownRef}>
+          <span
+            className="block text-[10px] font-medium uppercase tracking-wider mb-2"
+            style={{ color: "#a1a1aa" }}
+          >
+            Device
+          </span>
+          <div className="relative">
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="w-full flex items-center justify-between cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium"
+              style={{
+                backgroundColor: "#f5f5f7",
+                color: "#1d1d1f",
+                transition: "background-color 150ms ease",
+              }}
+            >
+              {current.name}
+              <ChevronIcon open={dropdownOpen} />
+            </button>
+
+            {dropdownOpen && (
+              <div
+                className="absolute top-full left-0 mt-1 w-full rounded-xl overflow-hidden"
+                style={{
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e5e5e5",
+                  boxShadow:
+                    "0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)",
+                  maxHeight: 280,
+                  overflowY: "auto",
+                  zIndex: 50,
+                }}
+              >
+                {devices.map((d, i) => {
+                  const isActive = i === deviceIndex;
+                  return (
+                    <button
+                      key={d.name}
+                      onClick={() => {
+                        setDeviceIndex(i);
+                        setDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-3 py-2 text-xs cursor-pointer"
+                      style={{
+                        backgroundColor: isActive
+                          ? "#f5f5f7"
+                          : "transparent",
+                        color: isActive ? "#1d1d1f" : "#6e6e73",
+                        fontWeight: isActive ? 600 : 400,
+                        transition: "background-color 150ms ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isActive)
+                          e.currentTarget.style.backgroundColor = "#fafafa";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = isActive
+                          ? "#f5f5f7"
+                          : "transparent";
+                      }}
+                    >
+                      {d.name}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Divider */}
+        {/* Device color */}
         {hasColors && (
-          <div
-            className="h-5"
-            style={{ width: 1, backgroundColor: "#e5e5e5" }}
-          />
+          <>
+            <div
+              className="w-full"
+              style={{ height: 1, backgroundColor: "#f0f0f0" }}
+            />
+            <div className="px-4 py-3">
+              <span
+                className="block text-[10px] font-medium uppercase tracking-wider mb-2"
+                style={{ color: "#a1a1aa" }}
+              >
+                Color
+              </span>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {config.colors.map((variant) => {
+                  const isActive = selectedColor === variant.name;
+                  return (
+                    <button
+                      key={variant.name}
+                      title={variant.name}
+                      onClick={() => setSelectedColor(variant.name)}
+                      className="relative flex items-center justify-center cursor-pointer touch-hitbox"
+                      style={{ width: 20, height: 20 }}
+                    >
+                      {isActive && (
+                        <span
+                          className="absolute inset-0 rounded-full"
+                          style={{ border: "1.5px solid #999" }}
+                        />
+                      )}
+                      <span
+                        className="rounded-full"
+                        style={{
+                          width: 14,
+                          height: 14,
+                          backgroundColor: variant.swatch,
+                          border: "0.5px solid rgba(0,0,0,0.12)",
+                        }}
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </>
         )}
 
-        {/* Device color swatches */}
-        {hasColors && (
-          <div className="flex items-center gap-1.5">
-            {config.colors.map((variant) => {
-              const isActive = selectedColor === variant.name;
+        {/* Canvas background */}
+        <div
+          className="w-full"
+          style={{ height: 1, backgroundColor: "#f0f0f0" }}
+        />
+        <div className="px-4 py-3">
+          <span
+            className="block text-[10px] font-medium uppercase tracking-wider mb-2"
+            style={{ color: "#a1a1aa" }}
+          >
+            Background
+          </span>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {CANVAS_BG_PRESETS.map((preset) => {
+              const isActive = canvasBg === preset.value;
+              const isTransparent = preset.value === null;
               return (
                 <button
-                  key={variant.name}
-                  title={variant.name}
-                  onClick={() => setSelectedColor(variant.name)}
+                  key={preset.label}
+                  title={preset.label}
+                  onClick={() => setCanvasBg(preset.value)}
                   className="relative flex items-center justify-center cursor-pointer touch-hitbox"
-                  style={{ width: 18, height: 18 }}
+                  style={{ width: 20, height: 20 }}
                 >
                   {isActive && (
                     <span
@@ -277,103 +336,64 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
                   <span
                     className="rounded-full"
                     style={{
-                      width: 12,
-                      height: 12,
-                      backgroundColor: variant.swatch,
+                      width: 14,
+                      height: 14,
+                      backgroundColor: isTransparent
+                        ? undefined
+                        : preset.swatch,
                       border: "0.5px solid rgba(0,0,0,0.12)",
+                      ...(isTransparent
+                        ? {
+                            backgroundImage: [
+                              "linear-gradient(45deg, #ccc 25%, transparent 25%)",
+                              "linear-gradient(-45deg, #ccc 25%, transparent 25%)",
+                              "linear-gradient(45deg, transparent 75%, #ccc 75%)",
+                              "linear-gradient(-45deg, transparent 75%, #ccc 75%)",
+                            ].join(", "),
+                            backgroundSize: "6px 6px",
+                            backgroundPosition:
+                              "0px 0px, 0px 3px, 3px -3px, -3px 0px",
+                          }
+                        : {}),
                     }}
                   />
                 </button>
               );
             })}
-          </div>
-        )}
 
-        {/* Divider */}
-        <div
-          className="h-5"
-          style={{ width: 1, backgroundColor: "#e5e5e5" }}
-        />
-
-        {/* Canvas background swatches */}
-        <div className="flex items-center gap-1.5">
-          {CANVAS_BG_PRESETS.map((preset) => {
-            const isActive = canvasBg === preset.value;
-            const isTransparent = preset.value === null;
-            return (
-              <button
-                key={preset.label}
-                title={preset.label}
-                onClick={() => setCanvasBg(preset.value)}
-                className="relative flex items-center justify-center cursor-pointer touch-hitbox"
-                style={{ width: 18, height: 18 }}
-              >
-                {isActive && (
+            {/* Custom bg color */}
+            <button
+              title="Custom color"
+              onClick={() => bgInputRef.current?.click()}
+              className="relative flex items-center justify-center cursor-pointer touch-hitbox"
+              style={{ width: 20, height: 20 }}
+            >
+              {canvasBg !== null &&
+                !CANVAS_BG_PRESETS.some((p) => p.value === canvasBg) && (
                   <span
                     className="absolute inset-0 rounded-full"
                     style={{ border: "1.5px solid #999" }}
                   />
                 )}
-                <span
-                  className="rounded-full"
-                  style={{
-                    width: 12,
-                    height: 12,
-                    backgroundColor: isTransparent
-                      ? undefined
-                      : preset.swatch,
-                    border: "0.5px solid rgba(0,0,0,0.12)",
-                    ...(isTransparent
-                      ? {
-                          backgroundImage: [
-                            "linear-gradient(45deg, #ccc 25%, transparent 25%)",
-                            "linear-gradient(-45deg, #ccc 25%, transparent 25%)",
-                            "linear-gradient(45deg, transparent 75%, #ccc 75%)",
-                            "linear-gradient(-45deg, transparent 75%, #ccc 75%)",
-                          ].join(", "),
-                          backgroundSize: "6px 6px",
-                          backgroundPosition:
-                            "0px 0px, 0px 3px, 3px -3px, -3px 0px",
-                        }
-                      : {}),
-                  }}
-                />
-              </button>
-            );
-          })}
-
-          {/* Custom bg color */}
-          <button
-            title="Custom color"
-            onClick={() => bgInputRef.current?.click()}
-            className="relative flex items-center justify-center cursor-pointer touch-hitbox"
-            style={{ width: 18, height: 18 }}
-          >
-            {canvasBg !== null &&
-              !CANVAS_BG_PRESETS.some((p) => p.value === canvasBg) && (
-                <span
-                  className="absolute inset-0 rounded-full"
-                  style={{ border: "1.5px solid #999" }}
-                />
-              )}
-            <span
-              className="rounded-full"
-              style={{
-                width: 12,
-                height: 12,
-                background:
-                  "conic-gradient(red, yellow, lime, aqua, blue, magenta, red)",
-                border: "0.5px solid rgba(0,0,0,0.12)",
-              }}
+              <span
+                className="rounded-full"
+                style={{
+                  width: 14,
+                  height: 14,
+                  background:
+                    "conic-gradient(red, yellow, lime, aqua, blue, magenta, red)",
+                  border: "0.5px solid rgba(0,0,0,0.12)",
+                }}
+              />
+            </button>
+            <input
+              ref={bgInputRef}
+              type="color"
+              className="sr-only"
+              value={canvasBg ?? "#ffffff"}
+              onChange={(e) => setCanvasBg(e.target.value)}
             />
-          </button>
-          <input
-            ref={bgInputRef}
-            type="color"
-            className="sr-only"
-            value={canvasBg ?? "#ffffff"}
-            onChange={(e) => setCanvasBg(e.target.value)}
-          />
+          </div>
         </div>
       </div>
     </>
