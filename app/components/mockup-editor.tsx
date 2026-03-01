@@ -351,7 +351,7 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
 
       {/* Fixed sidebar panel on the right */}
       <div
-        className="fixed top-6 right-6 z-40 rounded-2xl flex flex-col"
+        className="fixed top-16 right-6 z-40 rounded-2xl flex flex-col"
         style={{
           width: 260,
           backgroundColor: "#ffffff",
