@@ -60,8 +60,11 @@ export default function ShellCommand({ command }: { command: string }) {
 
       <button
         onClick={handleCopy}
-        className="ml-1 cursor-pointer transition-colors"
-        style={{ color: copied ? "#34d399" : "#6e6e73" }}
+        className="ml-1 cursor-pointer touch-hitbox"
+        style={{
+          color: copied ? "#34d399" : "#6e6e73",
+          transition: "color 150ms ease",
+        }}
         title="Copy to clipboard"
       >
         {copied ? <CheckIcon /> : <CopyIcon />}

@@ -47,7 +47,10 @@ const PlusIcon = () => (
 );
 
 const ScreenPlaceholder = () => (
-  <button className="absolute inset-0 w-full h-full bg-[#f2f2f2] hover:opacity-70 transition-opacity flex items-center justify-center cursor-pointer">
+  <button
+    className="absolute inset-0 w-full h-full bg-[#f2f2f2] hover:opacity-70 flex items-center justify-center cursor-pointer"
+    style={{ transition: "opacity 150ms ease" }}
+  >
     <PlusIcon />
   </button>
 );
@@ -99,7 +102,10 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
       <MockupCanvas ref={canvasRef} position={position} backgroundColor={canvasBg}>
         {canvasWidth > 0 && (
           <div
-            style={{ transition: "transform 0.3s ease-out" }}
+            style={{
+              transition: "transform 250ms cubic-bezier(0.77, 0, 0.175, 1)",
+              willChange: "transform",
+            }}
           >
             <DeviceMockup
               device={config}
@@ -124,7 +130,7 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
                 key={variant.name}
                 title={variant.name}
                 onClick={() => setSelectedColor(variant.name)}
-                className="relative flex items-center justify-center cursor-pointer"
+                className="relative flex items-center justify-center cursor-pointer touch-hitbox"
                 style={{
                   width: 18,
                   height: 18,
@@ -161,8 +167,9 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
             <button
               key={level}
               onClick={() => setZoom(level)}
-              className="cursor-pointer text-[11px] font-medium py-1 rounded-md transition-colors"
+              className="cursor-pointer text-[11px] font-medium py-1 rounded-md"
               style={{
+                transition: "background-color 150ms ease, color 150ms ease, border-color 150ms ease",
                 backgroundColor: isActive ? "#1d1d1f" : "#ffffff",
                 color: isActive ? "#ffffff" : "#6e6e73",
                 border: isActive ? "none" : "1px solid #d2d2d7",
@@ -182,8 +189,9 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
             <button
               key={value}
               onClick={() => setPosition(value)}
-              className="cursor-pointer text-[11px] font-medium py-1 rounded-md transition-colors"
+              className="cursor-pointer text-[11px] font-medium py-1 rounded-md"
               style={{
+                transition: "background-color 150ms ease, color 150ms ease, border-color 150ms ease",
                 backgroundColor: isActive ? "#1d1d1f" : "#ffffff",
                 color: isActive ? "#ffffff" : "#6e6e73",
                 border: isActive ? "none" : "1px solid #d2d2d7",
@@ -205,7 +213,7 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
               key={preset.label}
               title={preset.label}
               onClick={() => setCanvasBg(preset.value)}
-              className="relative flex items-center justify-center cursor-pointer"
+              className="relative flex items-center justify-center cursor-pointer touch-hitbox"
               style={{ width: 18, height: 18 }}
             >
               {isActive && (
@@ -244,7 +252,7 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
         <button
           title="Custom color"
           onClick={() => colorInputRef.current?.click()}
-          className="relative flex items-center justify-center cursor-pointer"
+          className="relative flex items-center justify-center cursor-pointer touch-hitbox"
           style={{ width: 18, height: 18 }}
         >
           {/* Show ring if current bg is a custom color (not in presets) */}

@@ -41,10 +41,13 @@ const MockupCanvas = forwardRef<HTMLDivElement, MockupCanvasProps>(
       >
         {/* Background layer: solid color when set, checkered pattern when transparent */}
         <div
-          className="absolute inset-0 transition-colors duration-200"
+          className="absolute inset-0"
           style={
             hasBg
-              ? { backgroundColor }
+              ? {
+                  backgroundColor,
+                  transition: "background-color 200ms cubic-bezier(0.645, 0.045, 0.355, 1)",
+                }
               : {
                   backgroundImage: [
                     "linear-gradient(45deg, #e5e5e5 25%, transparent 25%)",
@@ -54,6 +57,7 @@ const MockupCanvas = forwardRef<HTMLDivElement, MockupCanvasProps>(
                   ].join(", "),
                   backgroundSize: "20px 20px",
                   backgroundPosition: "0px 0px, 0px 10px, 10px -10px, -10px 0px",
+                  transition: "background-color 200ms cubic-bezier(0.645, 0.045, 0.355, 1)",
                 }
           }
         />
