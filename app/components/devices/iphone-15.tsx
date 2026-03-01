@@ -1,6 +1,6 @@
 import DeviceMockup, { type DeviceConfig } from "../device-mockup";
 
-const IPHONE_15: DeviceConfig = {
+export const IPHONE_15: DeviceConfig = {
   name: "iPhone 15",
   frameSrc: "/devices/iPhone 15.png",
   framePngWidth: 1419,
@@ -12,6 +12,14 @@ const IPHONE_15: DeviceConfig = {
   screenRadiusFraction: 0.115983,
   statusBarSrc: "/status-bar/iPhone 16 and 16 Plus Status Bar Black.png",
   statusBarHeightFraction: 0.065,
+  colors: [
+    { name: "Black", frameSrc: "/devices/iPhone 15 - Black.png", swatch: "#3E3C39" },
+    { name: "Blue", frameSrc: "/devices/iPhone 15 - Blue.png", swatch: "#D6E3EE" },
+    { name: "Green", frameSrc: "/devices/iPhone 15 - Green.png", swatch: "#D0E4CE" },
+    { name: "Pink", frameSrc: "/devices/iPhone 15 - Pink.png", swatch: "#F4D4D0" },
+    { name: "Yellow", frameSrc: "/devices/iPhone 15 - Yellow.png", swatch: "#F4E8B8" },
+  ],
+  defaultColor: "Black",
 };
 
 interface IPhone15Props {
@@ -20,6 +28,7 @@ interface IPhone15Props {
   screenColor?: string;
   showStatusBar?: boolean;
   className?: string;
+  color?: string;
 }
 
 export default function IPhone15({
@@ -28,6 +37,7 @@ export default function IPhone15({
   screenColor = "#f2f2f2",
   showStatusBar = true,
   className = "",
+  color,
 }: IPhone15Props) {
   return (
     <DeviceMockup
@@ -36,6 +46,7 @@ export default function IPhone15({
       screenColor={screenColor}
       showStatusBar={showStatusBar}
       className={className}
+      color={color}
     >
       {children}
     </DeviceMockup>

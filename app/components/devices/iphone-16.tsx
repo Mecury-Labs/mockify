@@ -6,7 +6,7 @@ import DeviceMockup, { type DeviceConfig } from "../device-mockup";
  * Frame PNG: 1079 x 2171 (native)
  * Proportions reverse-engineered from mockup.60fps.design
  */
-const IPHONE_16: DeviceConfig = {
+export const IPHONE_16: DeviceConfig = {
   name: "iPhone 16",
   frameSrc: "/devices/iPhone 16.png",
   framePngWidth: 1079,
@@ -18,6 +18,7 @@ const IPHONE_16: DeviceConfig = {
   screenRadiusFraction: 0.124252,
   statusBarSrc: "/status-bar/iPhone 16 and 16 Plus Status Bar Black.png",
   statusBarHeightFraction: 0.068966,
+  colors: [],
 };
 
 interface IPhone16Props {
@@ -26,6 +27,7 @@ interface IPhone16Props {
   screenColor?: string;
   showStatusBar?: boolean;
   className?: string;
+  color?: string;
 }
 
 export default function IPhone16({
@@ -34,6 +36,7 @@ export default function IPhone16({
   screenColor = "#f2f2f2",
   showStatusBar = true,
   className = "",
+  color,
 }: IPhone16Props) {
   return (
     <DeviceMockup
@@ -42,6 +45,7 @@ export default function IPhone16({
       screenColor={screenColor}
       showStatusBar={showStatusBar}
       className={className}
+      color={color}
     >
       {children}
     </DeviceMockup>

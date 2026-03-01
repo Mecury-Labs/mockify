@@ -1,6 +1,6 @@
 import DeviceMockup, { type DeviceConfig } from "../device-mockup";
 
-const IPHONE_13: DeviceConfig = {
+export const IPHONE_13: DeviceConfig = {
   name: "iPhone 13",
   frameSrc: "/devices/iPhone 13.png",
   framePngWidth: 1400,
@@ -12,6 +12,11 @@ const IPHONE_13: DeviceConfig = {
   screenRadiusFraction: 0.101421,
   statusBarSrc: "/status-bar/Notch Status Bar Black.png",
   statusBarHeightFraction: 0.055,
+  colors: [
+    { name: "Midnight", frameSrc: "/devices/iPhone 13 - Midnight.png", swatch: "#3E3C39" },
+    { name: "Starlight", frameSrc: "/devices/iPhone 13 - Starlight.png", swatch: "#F0E4D3" },
+  ],
+  defaultColor: "Midnight",
 };
 
 interface IPhone13Props {
@@ -20,6 +25,7 @@ interface IPhone13Props {
   screenColor?: string;
   showStatusBar?: boolean;
   className?: string;
+  color?: string;
 }
 
 export default function IPhone13({
@@ -28,6 +34,7 @@ export default function IPhone13({
   screenColor = "#f2f2f2",
   showStatusBar = true,
   className = "",
+  color,
 }: IPhone13Props) {
   return (
     <DeviceMockup
@@ -36,6 +43,7 @@ export default function IPhone13({
       screenColor={screenColor}
       showStatusBar={showStatusBar}
       className={className}
+      color={color}
     >
       {children}
     </DeviceMockup>

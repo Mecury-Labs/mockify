@@ -6,7 +6,7 @@ import DeviceMockup, { type DeviceConfig } from "../device-mockup";
  * Frame PNG: 1071 x 2190 (native)
  * Proportions derived from mockup.60fps.design + PNG pixel analysis
  */
-const IPHONE_17: DeviceConfig = {
+export const IPHONE_17: DeviceConfig = {
   name: "iPhone 17",
   frameSrc: "/devices/iPhone 17.png",
   framePngWidth: 1071,
@@ -18,6 +18,7 @@ const IPHONE_17: DeviceConfig = {
   screenRadiusFraction: 0.124003,
   statusBarSrc: "/status-bar/iPhone 16 and 16 Plus Status Bar Black.png",
   statusBarHeightFraction: 0.068708,
+  colors: [],
 };
 
 interface IPhone17Props {
@@ -26,6 +27,7 @@ interface IPhone17Props {
   screenColor?: string;
   showStatusBar?: boolean;
   className?: string;
+  color?: string;
 }
 
 export default function IPhone17({
@@ -34,6 +36,7 @@ export default function IPhone17({
   screenColor = "#f2f2f2",
   showStatusBar = true,
   className = "",
+  color,
 }: IPhone17Props) {
   return (
     <DeviceMockup
@@ -42,6 +45,7 @@ export default function IPhone17({
       screenColor={screenColor}
       showStatusBar={showStatusBar}
       className={className}
+      color={color}
     >
       {children}
     </DeviceMockup>

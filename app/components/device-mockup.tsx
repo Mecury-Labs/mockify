@@ -12,10 +12,20 @@ import Image from "next/image";
  * native dimensions, screen inset proportions, and status bar asset.
  */
 
+/** A single color variant for a device */
+export interface DeviceColorVariant {
+  /** Human-readable color name, e.g. "Midnight" */
+  name: string;
+  /** Path to the frame PNG for this color */
+  frameSrc: string;
+  /** CSS color swatch for the picker UI (hex) */
+  swatch: string;
+}
+
 export interface DeviceConfig {
   /** Display name for alt text */
   name: string;
-  /** Path to the device frame PNG in /public */
+  /** Path to the device frame PNG in /public (used when no color is selected) */
   frameSrc: string;
   /** Native width of the frame PNG */
   framePngWidth: number;
@@ -35,6 +45,10 @@ export interface DeviceConfig {
   statusBarSrc: string;
   /** Status bar height as fraction of screen height */
   statusBarHeightFraction: number;
+  /** Available color variants. Empty array means single-color device */
+  colors: DeviceColorVariant[];
+  /** Default color name (must match one of colors[].name) */
+  defaultColor?: string;
 }
 
 export interface DeviceMockupProps {
@@ -50,6 +64,8 @@ export interface DeviceMockupProps {
   showStatusBar?: boolean;
   /** Additional className for the outer wrapper */
   className?: string;
+  /** Color variant name. Uses defaultColor or frameSrc fallback if not set */
+  color?: string;
 }
 
 export default function DeviceMockup({
@@ -59,7 +75,15 @@ export default function DeviceMockup({
   screenColor = "#f2f2f2",
   showStatusBar = true,
   className = "",
+  color,
 }: DeviceMockupProps) {
+  // Resolve the frame source: color prop → defaultColor → frameSrc fallback
+  const resolvedColor = color ?? device.defaultColor;
+  const colorVariant = resolvedColor
+    ? device.colors.find((c) => c.name === resolvedColor)
+    : undefined;
+  const frameSrc = colorVariant?.frameSrc ?? device.frameSrc;
+
   const frameW = width;
   const frameH = width * (device.framePngHeight / device.framePngWidth);
 
@@ -133,7 +157,7 @@ export default function DeviceMockup({
       <Image
         alt={device.name}
         className="absolute pointer-events-none select-none"
-        src={device.frameSrc}
+        src={frameSrc}
         width={device.framePngWidth}
         height={device.framePngHeight}
         unoptimized
