@@ -94,7 +94,7 @@ export default function Examples() {
               <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-widest mb-8">
                 {group.label}
               </h2>
-              <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
                 {group.devices.map(({ name, config }) => (
                   <DeviceCard
                     key={name}
