@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { toast } from "sonner";
 import DeviceMockup, { type DeviceConfig } from "./device-mockup";
 import MockupCanvas, { type CanvasPosition } from "./mockup-canvas";
+import CodeModal from "./code-modal";
 
 /* ── Constants ── */
 
@@ -155,6 +156,9 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
   // Screen content
   const [screenContent, setScreenContent] = useState<ScreenContent | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Code modal
+  const [codeModalOpen, setCodeModalOpen] = useState(false);
 
   // Canvas sizing
   const [canvasWidth, setCanvasWidth] = useState(0);
@@ -349,7 +353,7 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
       <div
         className="fixed top-6 right-6 z-40 rounded-2xl flex flex-col"
         style={{
-          width: 220,
+          width: 260,
           backgroundColor: "#ffffff",
           border: "1px solid #e5e5e5",
           boxShadow:
@@ -659,7 +663,54 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
             )}
           </div>
         </div>
+
+        {/* View Code */}
+        <div
+          className="w-full"
+          style={{ height: 1, backgroundColor: "#f0f0f0" }}
+        />
+        <div className="px-4 py-3">
+          <button
+            onClick={() => setCodeModalOpen(true)}
+            className="w-full flex items-center justify-center gap-2 cursor-pointer rounded-lg px-3 py-2 text-xs font-medium"
+            style={{
+              backgroundColor: "#1d1d1f",
+              color: "#ffffff",
+              transition: "opacity 150ms ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = "0.85";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = "1";
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="16 18 22 12 16 6" />
+              <polyline points="8 6 2 12 8 18" />
+            </svg>
+            View Code
+          </button>
+        </div>
       </div>
+
+      {/* Code modal */}
+      <CodeModal
+        open={codeModalOpen}
+        onClose={() => setCodeModalOpen(false)}
+        deviceName={current.name}
+        color={selectedColor}
+      />
     </>
   );
 }
