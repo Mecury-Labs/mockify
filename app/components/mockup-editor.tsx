@@ -148,7 +148,7 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
   }, []);
 
   const shouldReduceMotion = useReducedMotion();
-  const baseDeviceWidth = canvasWidth * BASE_DEVICE_RATIO;
+  const deviceWidth = canvasWidth * BASE_DEVICE_RATIO * zoom;
   const hasColors = config.colors.length > 0;
 
   // Key only changes on device model swap (not color — color is just a frame PNG change)
@@ -173,17 +173,18 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
                 transition={{ duration: 0.12, ease: [0.23, 1, 0.32, 1] }}
               >
                 <motion.div
-                  animate={{ scale: zoom }}
+                  layout
                   transition={{
-                    type: "spring",
-                    duration: 0.3,
-                    bounce: 0.05,
+                    layout: {
+                      type: "spring",
+                      duration: 0.3,
+                      bounce: 0.05,
+                    },
                   }}
-                  style={{ willChange: "transform" }}
                 >
                   <DeviceMockup
                     device={config}
-                    width={canvasWidth * BASE_DEVICE_RATIO}
+                    width={deviceWidth}
                     color={selectedColor}
                   >
                     <ScreenPlaceholder />
