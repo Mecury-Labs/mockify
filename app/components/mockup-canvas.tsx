@@ -54,7 +54,10 @@ const MockupCanvas = forwardRef<HTMLDivElement, MockupCanvasProps>(
         <div
           className={`absolute overflow-hidden flex justify-center ${POSITION_ALIGN[position]}`}
           style={{
-            inset: "8%",
+            top: "8%",
+            bottom: "8%",
+            left: 0,
+            right: 0,
             transition: "align-items 0.3s ease-out",
           }}
         >
