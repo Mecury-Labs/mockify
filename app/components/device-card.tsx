@@ -3,6 +3,9 @@
 import { useState } from "react";
 import DeviceMockup, { type DeviceConfig } from "./device-mockup";
 
+const ZOOM_LEVELS = [0.5, 0.75, 0.9, 1, 1.25, 1.5, 1.75, 2] as const;
+const BASE_WIDTH = 200;
+
 const PlusIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -28,6 +31,18 @@ const ScreenPlaceholder = () => (
   </button>
 );
 
+function formatZoom(z: number) {
+  if (z === 1) return "1x";
+  if (z === 0.5) return "0.5x";
+  if (z === 0.75) return "0.75x";
+  if (z === 0.9) return "0.9x";
+  if (z === 1.25) return "1.25x";
+  if (z === 1.5) return "1.5x";
+  if (z === 1.75) return "1.75x";
+  if (z === 2) return "2x";
+  return `${z}x`;
+}
+
 interface DeviceCardProps {
   name: string;
   config: DeviceConfig;
@@ -37,17 +52,30 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     config.defaultColor
   );
+  const [zoom, setZoom] = useState(1);
 
   const hasColors = config.colors.length > 0;
+  const deviceWidth = BASE_WIDTH * zoom;
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <DeviceMockup device={config} width={200} color={selectedColor}>
-        <ScreenPlaceholder />
-      </DeviceMockup>
+      {/* Device container — scales with zoom */}
+      <div
+        className="flex items-center justify-center"
+        style={{
+          width: BASE_WIDTH * 2 + 16,
+          height: (BASE_WIDTH * 2 + 16) * (config.framePngHeight / config.framePngWidth),
+          overflow: "hidden",
+        }}
+      >
+        <DeviceMockup device={config} width={deviceWidth} color={selectedColor}>
+          <ScreenPlaceholder />
+        </DeviceMockup>
+      </div>
 
       <span className="text-xs font-medium text-zinc-500">{name}</span>
 
+      {/* Color picker */}
       {hasColors && (
         <div className="flex items-center gap-1.5">
           {config.colors.map((variant) => {
@@ -63,7 +91,6 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
                   height: 18,
                 }}
               >
-                {/* Active ring */}
                 {isActive && (
                   <span
                     className="absolute inset-0 rounded-full"
@@ -72,7 +99,6 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
                     }}
                   />
                 )}
-                {/* Color swatch */}
                 <span
                   className="rounded-full"
                   style={{
@@ -87,6 +113,27 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
           })}
         </div>
       )}
+
+      {/* Zoom controls */}
+      <div className="grid grid-cols-4 gap-1 w-full max-w-[200px]">
+        {ZOOM_LEVELS.map((level) => {
+          const isActive = zoom === level;
+          return (
+            <button
+              key={level}
+              onClick={() => setZoom(level)}
+              className="cursor-pointer text-[11px] font-medium py-1 rounded-md transition-colors"
+              style={{
+                backgroundColor: isActive ? "#1d1d1f" : "#ffffff",
+                color: isActive ? "#ffffff" : "#6e6e73",
+                border: isActive ? "none" : "1px solid #d2d2d7",
+              }}
+            >
+              {formatZoom(level)}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
