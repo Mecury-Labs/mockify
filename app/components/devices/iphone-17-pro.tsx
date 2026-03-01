@@ -3,22 +3,26 @@ import DeviceMockup, { type DeviceConfig } from "../device-mockup";
 /**
  * iPhone 17 Pro device configuration.
  *
- * Frame PNG: 1071 x 2190 (native)
- * Proportions derived from mockup.60fps.design + PNG pixel analysis
+ * Frame PNG: 1350 x 2760 (Apple Design Resources)
  */
 export const IPHONE_17_PRO: DeviceConfig = {
   name: "iPhone 17 Pro",
-  frameSrc: "/devices/iPhone 17 Pro.png",
-  framePngWidth: 1071,
-  framePngHeight: 2190,
-  screenLeftFraction: 0.054155,
-  screenTopFraction: 0.025114,
-  screenWidthFraction: 0.891690,
-  screenHeightFraction: 0.949315,
-  screenRadiusFraction: 0.124133,
+  frameSrc: "/devices/iPhone 17 Pro - Silver.png",
+  framePngWidth: 1350,
+  framePngHeight: 2760,
+  screenLeftFraction: 0.054815,
+  screenTopFraction: 0.025725,
+  screenWidthFraction: 0.889630,
+  screenHeightFraction: 0.948188,
+  screenRadiusFraction: 0.146667,
   statusBarSrc: "/status-bar/iPhone 16 Pro and 16 Max Status Bar Black.png",
   statusBarHeightFraction: 0.073693,
-  colors: [],
+  colors: [
+    { name: "Silver", frameSrc: "/devices/iPhone 17 Pro - Silver.png", swatch: "#E3E4DF" },
+    { name: "Cosmic Orange", frameSrc: "/devices/iPhone 17 Pro - Cosmic Orange.png", swatch: "#D4956A" },
+    { name: "Deep Blue", frameSrc: "/devices/iPhone 17 Pro - Deep Blue.png", swatch: "#3D4F6A" },
+  ],
+  defaultColor: "Silver",
 };
 
 interface IPhone17ProProps {

@@ -3,22 +3,28 @@ import DeviceMockup, { type DeviceConfig } from "../device-mockup";
 /**
  * iPhone 17 device configuration.
  *
- * Frame PNG: 1071 x 2190 (native)
- * Proportions derived from mockup.60fps.design + PNG pixel analysis
+ * Frame PNG: 1350 x 2760 (Apple Design Resources)
  */
 export const IPHONE_17: DeviceConfig = {
   name: "iPhone 17",
-  frameSrc: "/devices/iPhone 17.png",
-  framePngWidth: 1071,
-  framePngHeight: 2190,
-  screenLeftFraction: 0.054155,
-  screenTopFraction: 0.025114,
-  screenWidthFraction: 0.890756,
-  screenHeightFraction: 0.949315,
-  screenRadiusFraction: 0.124003,
+  frameSrc: "/devices/iPhone 17 - Black.png",
+  framePngWidth: 1350,
+  framePngHeight: 2760,
+  screenLeftFraction: 0.054815,
+  screenTopFraction: 0.025725,
+  screenWidthFraction: 0.889630,
+  screenHeightFraction: 0.948188,
+  screenRadiusFraction: 0.147407,
   statusBarSrc: "/status-bar/iPhone 16 and 16 Plus Status Bar Black.png",
   statusBarHeightFraction: 0.068708,
-  colors: [],
+  colors: [
+    { name: "Black", frameSrc: "/devices/iPhone 17 - Black.png", swatch: "#3B3B3D" },
+    { name: "White", frameSrc: "/devices/iPhone 17 - White.png", swatch: "#F5F5F0" },
+    { name: "Lavender", frameSrc: "/devices/iPhone 17 - Lavender.png", swatch: "#D0C4D8" },
+    { name: "Mist Blue", frameSrc: "/devices/iPhone 17 - Mist Blue.png", swatch: "#B4C8D4" },
+    { name: "Sage", frameSrc: "/devices/iPhone 17 - Sage.png", swatch: "#BEC8B0" },
+  ],
+  defaultColor: "Black",
 };
 
 interface IPhone17Props {

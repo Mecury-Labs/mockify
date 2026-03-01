@@ -3,22 +3,27 @@ import DeviceMockup, { type DeviceConfig } from "../device-mockup";
 /**
  * iPhone 16 Pro device configuration.
  *
- * Frame PNG: 1071 x 2190 (native)
- * Proportions reverse-engineered from mockup.60fps.design
+ * Frame PNG: 1350 x 2760 (Apple Design Resources)
  */
 export const IPHONE_16_PRO: DeviceConfig = {
   name: "iPhone 16 Pro",
-  frameSrc: "/devices/iPhone 16 Pro.png",
-  framePngWidth: 1071,
-  framePngHeight: 2190,
-  screenLeftFraction: 0.048309,
-  screenTopFraction: 0.018913,
-  screenWidthFraction: 0.903382,
-  screenHeightFraction: 0.959811,
-  screenRadiusFraction: 0.125761,
+  frameSrc: "/devices/iPhone 16 Pro - Natural Titanium.png",
+  framePngWidth: 1350,
+  framePngHeight: 2760,
+  screenLeftFraction: 0.054815,
+  screenTopFraction: 0.025725,
+  screenWidthFraction: 0.889630,
+  screenHeightFraction: 0.948188,
+  screenRadiusFraction: 0.147407,
   statusBarSrc: "/status-bar/iPhone 16 Pro and 16 Max Status Bar Black.png",
   statusBarHeightFraction: 0.073892,
-  colors: [],
+  colors: [
+    { name: "Natural Titanium", frameSrc: "/devices/iPhone 16 Pro - Natural Titanium.png", swatch: "#C2B9AE" },
+    { name: "Black Titanium", frameSrc: "/devices/iPhone 16 Pro - Black Titanium.png", swatch: "#3B3B3D" },
+    { name: "White Titanium", frameSrc: "/devices/iPhone 16 Pro - White Titanium.png", swatch: "#E3E4DF" },
+    { name: "Desert Titanium", frameSrc: "/devices/iPhone 16 Pro - Desert Titanium.png", swatch: "#C4A97D" },
+  ],
+  defaultColor: "Natural Titanium",
 };
 
 interface IPhone16ProProps {

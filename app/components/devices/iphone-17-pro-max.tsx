@@ -3,22 +3,26 @@ import DeviceMockup, { type DeviceConfig } from "../device-mockup";
 /**
  * iPhone 17 Pro Max device configuration.
  *
- * Frame PNG: 1167 x 2380 (native)
- * Proportions derived from mockup.60fps.design + PNG pixel analysis
+ * Frame PNG: 1470 x 3000 (Apple Design Resources)
  */
 export const IPHONE_17_PRO_MAX: DeviceConfig = {
   name: "iPhone 17 Pro Max",
-  frameSrc: "/devices/iPhone 17 Pro Max.png",
-  framePngWidth: 1167,
-  framePngHeight: 2380,
-  screenLeftFraction: 0.051414,
-  screenTopFraction: 0.022269,
-  screenWidthFraction: 0.896315,
-  screenHeightFraction: 0.955462,
-  screenRadiusFraction: 0.125067,
+  frameSrc: "/devices/iPhone 17 Pro Max - Silver.png",
+  framePngWidth: 1470,
+  framePngHeight: 3000,
+  screenLeftFraction: 0.052381,
+  screenTopFraction: 0.022667,
+  screenWidthFraction: 0.894558,
+  screenHeightFraction: 0.954333,
+  screenRadiusFraction: 0.136054,
   statusBarSrc: "/status-bar/iPhone 16 Pro and 16 Max Status Bar Black.png",
   statusBarHeightFraction: 0.066415,
-  colors: [],
+  colors: [
+    { name: "Silver", frameSrc: "/devices/iPhone 17 Pro Max - Silver.png", swatch: "#E3E4DF" },
+    { name: "Cosmic Orange", frameSrc: "/devices/iPhone 17 Pro Max - Cosmic Orange.png", swatch: "#D4956A" },
+    { name: "Deep Blue", frameSrc: "/devices/iPhone 17 Pro Max - Deep Blue.png", swatch: "#3D4F6A" },
+  ],
+  defaultColor: "Silver",
 };
 
 interface IPhone17ProMaxProps {

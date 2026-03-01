@@ -3,22 +3,28 @@ import DeviceMockup, { type DeviceConfig } from "../device-mockup";
 /**
  * iPhone 16 Plus device configuration.
  *
- * Frame PNG: 1167 x 2357 (native)
- * Proportions reverse-engineered from mockup.60fps.design
+ * Frame PNG: 1470 x 2970 (Apple Design Resources)
  */
 export const IPHONE_16_PLUS: DeviceConfig = {
   name: "iPhone 16 Plus",
-  frameSrc: "/devices/iPhone 16 Plus.png",
-  framePngWidth: 1167,
-  framePngHeight: 2357,
-  screenLeftFraction: 0.052632,
-  screenTopFraction: 0.018913,
-  screenWidthFraction: 0.894737,
-  screenHeightFraction: 0.959811,
-  screenRadiusFraction: 0.124557,
+  frameSrc: "/devices/iPhone 16 Plus - Black.png",
+  framePngWidth: 1470,
+  framePngHeight: 2970,
+  screenLeftFraction: 0.062585,
+  screenTopFraction: 0.029966,
+  screenWidthFraction: 0.874150,
+  screenHeightFraction: 0.939731,
+  screenRadiusFraction: 0.120408,
   statusBarSrc: "/status-bar/iPhone 16 and 16 Plus Status Bar Black.png",
   statusBarHeightFraction: 0.064039,
-  colors: [],
+  colors: [
+    { name: "Black", frameSrc: "/devices/iPhone 16 Plus - Black.png", swatch: "#3B3B3D" },
+    { name: "White", frameSrc: "/devices/iPhone 16 Plus - White.png", swatch: "#F5F5F0" },
+    { name: "Teal", frameSrc: "/devices/iPhone 16 Plus - Teal.png", swatch: "#B0D4CE" },
+    { name: "Pink", frameSrc: "/devices/iPhone 16 Plus - Pink.png", swatch: "#F2C8D0" },
+    { name: "Ultramarine", frameSrc: "/devices/iPhone 16 Plus - Ultramarine.png", swatch: "#7C8ACF" },
+  ],
+  defaultColor: "Black",
 };
 
 interface IPhone16PlusProps {

@@ -3,22 +3,27 @@ import DeviceMockup, { type DeviceConfig } from "../device-mockup";
 /**
  * iPhone Air device configuration.
  *
- * Frame PNG: 1095 x 2285 (native)
- * Proportions derived from mockup.60fps.design + PNG pixel analysis
+ * Frame PNG: 1380 x 2880 (Apple Design Resources)
  */
 export const IPHONE_AIR: DeviceConfig = {
   name: "iPhone Air",
-  frameSrc: "/devices/iPhone Air.png",
-  framePngWidth: 1095,
-  framePngHeight: 2285,
-  screenLeftFraction: 0.043836,
-  screenTopFraction: 0.025383,
-  screenWidthFraction: 0.912329,
-  screenHeightFraction: 0.949234,
-  screenRadiusFraction: 0.127302,
+  frameSrc: "/devices/iPhone Air - Sky Blue.png",
+  framePngWidth: 1380,
+  framePngHeight: 2880,
+  screenLeftFraction: 0.044928,
+  screenTopFraction: 0.025694,
+  screenWidthFraction: 0.909420,
+  screenHeightFraction: 0.948264,
+  screenRadiusFraction: 0.143478,
   statusBarSrc: "/status-bar/iPhone 16 and 16 Plus Status Bar Black.png",
   statusBarHeightFraction: 0.068964,
-  colors: [],
+  colors: [
+    { name: "Sky Blue", frameSrc: "/devices/iPhone Air - Sky Blue.png", swatch: "#A8C8D8" },
+    { name: "Cloud White", frameSrc: "/devices/iPhone Air - Cloud White.png", swatch: "#F5F5F0" },
+    { name: "Light Gold", frameSrc: "/devices/iPhone Air - Light Gold.png", swatch: "#E8D8C0" },
+    { name: "Space Black", frameSrc: "/devices/iPhone Air - Space Black.png", swatch: "#3B3B3D" },
+  ],
+  defaultColor: "Sky Blue",
 };
 
 interface IPhoneAirProps {
