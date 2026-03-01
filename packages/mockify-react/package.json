@@ -1,0 +1,63 @@
+{
+  "name": "@mockify/react",
+  "version": "0.1.0",
+  "description": "Ultra-realistic iPhone device mockups for React. All models from iPhone 13 through iPhone 17, with official Apple Design Resources frames.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mecury-Labs/mockify.git",
+    "directory": "packages/mockify-react"
+  },
+  "homepage": "https://github.com/Mecury-Labs/mockify",
+  "keywords": [
+    "react",
+    "iphone",
+    "mockup",
+    "device",
+    "apple",
+    "design",
+    "component",
+    "ui"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "bin": {
+    "mockify": "./bin/cli.mjs"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "assets"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5"
+  }
+}

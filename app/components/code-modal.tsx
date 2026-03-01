@@ -1,108 +1,97 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { codeToHtml } from "shiki";
 
 /* ── Icons ── */
 
 const CloseIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="6" x2="6" y2="18" />
     <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
 
 const CopyIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
   </svg>
 );
 
 const CheckIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="20 6 9 17 4 12" />
   </svg>
 );
 
 /* ── Helpers ── */
 
-/** Convert a device name like "iPhone 16 Pro" to a config import name like "IPHONE_16_PRO" */
-function toConfigName(name: string): string {
-  return name.toUpperCase().replace(/\s+/g, "_");
+/** "iPhone 16 Pro" → "iPhone16Pro" */
+function toCamelConfig(name: string): string {
+  return name
+    .replace(/iPhone\s+/, "iPhone")
+    .replace(/\s+(\w)/g, (_, c: string) => c.toUpperCase());
 }
 
-/** Convert a device name to a file name like "iphone-16-pro" */
-function toFileName(name: string): string {
-  return name.toLowerCase().replace(/\s+/g, "-");
+/* ── Tab definitions ── */
+
+type TabId = "install" | "setup" | "usage";
+
+interface TabDef {
+  id: TabId;
+  label: string;
+  step: string;
+  lang: string;
+  getCode: (deviceName: string, color?: string) => string;
 }
 
-/** Generate the usage code example */
-function generateCode(deviceName: string, color?: string): string {
-  const configName = toConfigName(deviceName);
-  const fileName = toFileName(deviceName);
-
-  return `import DeviceMockup from "@/components/device-mockup";
-import { ${configName} } from "@/components/devices/${fileName}";
+const TABS: TabDef[] = [
+  {
+    id: "install",
+    label: "Install",
+    step: "1",
+    lang: "bash",
+    getCode: () => `npm install @mockify/react`,
+  },
+  {
+    id: "setup",
+    label: "Setup",
+    step: "2",
+    lang: "bash",
+    getCode: () => `npx mockify init`,
+  },
+  {
+    id: "usage",
+    label: "Usage",
+    step: "3",
+    lang: "tsx",
+    getCode: (deviceName: string, color?: string) => {
+      const configName = toCamelConfig(deviceName);
+      return `import { DeviceMockup, ${configName} } from "@mockify/react";
 
 export default function MyComponent() {
   return (
     <DeviceMockup
       device={${configName}}
       width={320}${color ? `\n      color="${color}"` : ""}
-      showStatusBar={false}
     >
-      {/* Image preview */}
       <img
         src="/my-screenshot.png"
         alt="App screenshot"
-        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
       />
-
-      {/* Or video preview */}
-      {/* <video
-        src="/my-recording.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-      /> */}
     </DeviceMockup>
   );
 }`;
-}
+    },
+  },
+];
 
 /* ── Component ── */
 
@@ -119,27 +108,41 @@ export default function CodeModal({
   deviceName,
   color,
 }: CodeModalProps) {
-  const [html, setHtml] = useState("");
+  const [activeTab, setActiveTab] = useState<TabId>("usage");
+  const [htmlCache, setHtmlCache] = useState<Record<string, string>>({});
   const [copied, setCopied] = useState(false);
-  const code = generateCode(deviceName, color);
   const overlayRef = useRef<HTMLDivElement>(null);
+
+  const currentTab = TABS.find((t) => t.id === activeTab)!;
+  const code = currentTab.getCode(deviceName, color);
+  const cacheKey = `${activeTab}:${code}`;
 
   // Highlight code with shiki
   useEffect(() => {
     if (!open) return;
-    let cancelled = false;
+    if (htmlCache[cacheKey]) return;
 
+    let cancelled = false;
     codeToHtml(code, {
-      lang: "tsx",
+      lang: currentTab.lang,
       theme: "github-light-default",
     }).then((result) => {
-      if (!cancelled) setHtml(result);
+      if (!cancelled) {
+        setHtmlCache((prev) => ({ ...prev, [cacheKey]: result }));
+      }
     });
-
     return () => {
       cancelled = true;
     };
-  }, [code, open]);
+  }, [code, cacheKey, open, currentTab.lang, htmlCache]);
+
+  // Reset tab when modal opens
+  useEffect(() => {
+    if (open) {
+      setActiveTab("usage");
+      setCopied(false);
+    }
+  }, [open]);
 
   // Close on Escape
   useEffect(() => {
@@ -151,11 +154,13 @@ export default function CodeModal({
     return () => document.removeEventListener("keydown", handler);
   }, [open, onClose]);
 
-  const handleCopy = async () => {
+  const handleCopy = useCallback(async () => {
     await navigator.clipboard.writeText(code);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
-  };
+  }, [code]);
+
+  const html = htmlCache[cacheKey];
 
   return (
     <AnimatePresence>
@@ -169,7 +174,10 @@ export default function CodeModal({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-6"
-            style={{ backgroundColor: "rgba(0,0,0,0.2)", backdropFilter: "blur(8px)" }}
+            style={{
+              backgroundColor: "rgba(0,0,0,0.18)",
+              backdropFilter: "blur(8px)",
+            }}
             onClick={(e) => {
               if (e.target === overlayRef.current) onClose();
             }}
@@ -181,14 +189,15 @@ export default function CodeModal({
               exit={{ opacity: 0, scale: 0.96, y: 10 }}
               transition={{ duration: 0.15, ease: [0.23, 1, 0.32, 1] }}
               className="w-full"
-              style={{ maxWidth: 640 }}
+              style={{ maxWidth: 600 }}
             >
               <div
                 className="rounded-2xl overflow-hidden"
                 style={{
                   backgroundColor: "#ffffff",
                   border: "1px solid #e5e5e5",
-                  boxShadow: "0 16px 48px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06)",
+                  boxShadow:
+                    "0 24px 48px rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.04)",
                 }}
               >
                 {/* Header */}
@@ -196,58 +205,187 @@ export default function CodeModal({
                   className="flex items-center justify-between px-5 py-3"
                   style={{ borderBottom: "1px solid #f0f0f0" }}
                 >
-                  <span
-                    className="text-xs font-medium"
-                    style={{ color: "#6e6e73" }}
-                  >
-                    Usage — {deviceName}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={handleCopy}
-                      className="flex items-center gap-1 cursor-pointer rounded-md px-2 py-1 text-xs"
-                      style={{
-                        color: copied ? "#34C759" : "#6e6e73",
-                        backgroundColor: "transparent",
-                        border: "1px solid #e5e5e5",
-                        transition: "color 150ms ease",
-                      }}
+                  <div className="flex items-center gap-3">
+                    <span
+                      className="text-[13px] font-semibold"
+                      style={{ color: "#1d1d1f" }}
                     >
-                      {copied ? <CheckIcon /> : <CopyIcon />}
-                      {copied ? "Copied" : "Copy"}
-                    </button>
-                    <button
-                      onClick={onClose}
-                      className="flex items-center justify-center cursor-pointer rounded-md p-1"
+                      Get started
+                    </span>
+                    <span
+                      className="text-[11px] font-medium rounded-full px-2 py-0.5"
                       style={{
                         color: "#6e6e73",
-                        backgroundColor: "transparent",
-                        border: "1px solid #e5e5e5",
-                        transition: "color 150ms ease",
+                        backgroundColor: "#f5f5f7",
                       }}
                     >
-                      <CloseIcon />
-                    </button>
+                      {deviceName}
+                    </span>
+                  </div>
+                  <button
+                    onClick={onClose}
+                    className="flex items-center justify-center cursor-pointer rounded-lg p-1.5"
+                    style={{
+                      color: "#a1a1aa",
+                      backgroundColor: "transparent",
+                      transition: "all 150ms ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#f5f5f7";
+                      e.currentTarget.style.color = "#6e6e73";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                      e.currentTarget.style.color = "#a1a1aa";
+                    }}
+                  >
+                    <CloseIcon />
+                  </button>
+                </div>
+
+                {/* Tabs */}
+                <div
+                  className="flex items-center gap-0 px-5"
+                  style={{ borderBottom: "1px solid #f0f0f0" }}
+                >
+                  {TABS.map((tab) => {
+                    const isActive = activeTab === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => {
+                          setActiveTab(tab.id);
+                          setCopied(false);
+                        }}
+                        className="relative flex items-center gap-1.5 cursor-pointer text-xs font-medium px-3 py-2.5"
+                        style={{
+                          color: isActive ? "#1d1d1f" : "#a1a1aa",
+                          backgroundColor: "transparent",
+                          border: "none",
+                          transition: "color 150ms ease",
+                        }}
+                      >
+                        <span
+                          className="flex items-center justify-center rounded-full text-[10px] font-semibold"
+                          style={{
+                            width: 18,
+                            height: 18,
+                            backgroundColor: isActive
+                              ? "#1d1d1f"
+                              : "#f0f0f0",
+                            color: isActive ? "#ffffff" : "#a1a1aa",
+                            transition: "all 150ms ease",
+                          }}
+                        >
+                          {tab.step}
+                        </span>
+                        {tab.label}
+                        {/* Active indicator */}
+                        {isActive && (
+                          <motion.div
+                            layoutId="tab-indicator"
+                            className="absolute bottom-0 left-3 right-3"
+                            style={{
+                              height: 2,
+                              backgroundColor: "#1d1d1f",
+                              borderRadius: 1,
+                            }}
+                            transition={{
+                              type: "spring",
+                              duration: 0.3,
+                              bounce: 0.1,
+                            }}
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Code area */}
+                <div
+                  className="relative"
+                  style={{ backgroundColor: "#fafafa" }}
+                >
+                  {/* Copy button — top right of code area */}
+                  <button
+                    onClick={handleCopy}
+                    className="absolute top-3 right-3 z-10 flex items-center gap-1 cursor-pointer rounded-lg px-2.5 py-1.5 text-[11px] font-medium"
+                    style={{
+                      color: copied ? "#34C759" : "#6e6e73",
+                      backgroundColor: copied ? "#f0faf4" : "#ffffff",
+                      border: copied
+                        ? "1px solid #bbf0d0"
+                        : "1px solid #e5e5e5",
+                      boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                      transition: "all 150ms ease",
+                    }}
+                  >
+                    {copied ? <CheckIcon /> : <CopyIcon />}
+                    {copied ? "Copied!" : "Copy"}
+                  </button>
+
+                  <div
+                    className="overflow-auto px-5 py-4"
+                    style={{ maxHeight: 380, minHeight: 80 }}
+                  >
+                    {html ? (
+                      <div
+                        className="text-[13px] leading-relaxed [&_pre]:!bg-transparent [&_pre]:!p-0 [&_code]:!bg-transparent"
+                        dangerouslySetInnerHTML={{ __html: html }}
+                      />
+                    ) : (
+                      <div
+                        className="text-xs font-mono"
+                        style={{ color: "#a1a1aa" }}
+                      >
+                        Loading...
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                {/* Code */}
+                {/* Footer hint */}
                 <div
-                  className="overflow-auto px-5 py-4"
-                  style={{ maxHeight: 480, backgroundColor: "#fafafa" }}
+                  className="px-5 py-3 flex items-center justify-between"
+                  style={{
+                    borderTop: "1px solid #f0f0f0",
+                    backgroundColor: "#ffffff",
+                  }}
                 >
-                  {html ? (
-                    <div
-                      className="text-[13px] leading-relaxed [&_pre]:!bg-transparent [&_pre]:!p-0 [&_code]:!bg-transparent"
-                      dangerouslySetInnerHTML={{ __html: html }}
-                    />
-                  ) : (
-                    <div
-                      className="text-xs font-mono"
-                      style={{ color: "#a1a1aa" }}
+                  <span
+                    className="text-[11px]"
+                    style={{ color: "#a1a1aa" }}
+                  >
+                    {activeTab === "install" && "Install the package from npm"}
+                    {activeTab === "setup" && "Copy device frames to your public directory"}
+                    {activeTab === "usage" && "Import and use in any React component"}
+                  </span>
+                  {activeTab !== "usage" && (
+                    <button
+                      onClick={() => {
+                        const idx = TABS.findIndex((t) => t.id === activeTab);
+                        if (idx < TABS.length - 1) {
+                          setActiveTab(TABS[idx + 1].id);
+                          setCopied(false);
+                        }
+                      }}
+                      className="text-[11px] font-medium cursor-pointer"
+                      style={{
+                        color: "#1d1d1f",
+                        backgroundColor: "transparent",
+                        border: "none",
+                        transition: "opacity 150ms ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.opacity = "0.6";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.opacity = "1";
+                      }}
                     >
-                      Loading...
-                    </div>
+                      Next step &rarr;
+                    </button>
                   )}
                 </div>
               </div>

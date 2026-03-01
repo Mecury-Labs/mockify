@@ -55,7 +55,7 @@ export default function Examples() {
           <p className="text-sm text-zinc-500">
             iPhone device mockups — all models
           </p>
-          <ShellCommand command="npx mockify add iphone16-pro" />
+          <ShellCommand command="npm install @mockify/react" />
         </div>
 
         <MockupEditor devices={ALL_DEVICES} />
