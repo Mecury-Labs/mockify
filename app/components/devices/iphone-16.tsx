@@ -1,26 +1,26 @@
 import DeviceMockup, { type DeviceConfig } from "../device-mockup";
 
 /**
- * iPhone 16 Plus device configuration.
+ * iPhone 16 device configuration.
  *
- * Frame PNG: 1167 x 2357 (native)
+ * Frame PNG: 1079 x 2171 (native)
  * Proportions reverse-engineered from mockup.60fps.design
  */
-const IPHONE_16_PLUS: DeviceConfig = {
-  name: "iPhone 16 Plus",
-  frameSrc: "/devices/iPhone 16 Plus.png",
-  framePngWidth: 1167,
-  framePngHeight: 2357,
-  screenLeftFraction: 0.052632,
+const IPHONE_16: DeviceConfig = {
+  name: "iPhone 16",
+  frameSrc: "/devices/iPhone 16.png",
+  framePngWidth: 1079,
+  framePngHeight: 2171,
+  screenLeftFraction: 0.057143,
   screenTopFraction: 0.018913,
-  screenWidthFraction: 0.894737,
+  screenWidthFraction: 0.890476,
   screenHeightFraction: 0.959811,
-  screenRadiusFraction: 0.124557,
+  screenRadiusFraction: 0.124252,
   statusBarSrc: "/status-bar/iPhone 16 and 16 Plus Status Bar Black.png",
-  statusBarHeightFraction: 0.064039,
+  statusBarHeightFraction: 0.068966,
 };
 
-interface IPhone16PlusProps {
+interface IPhone16Props {
   children?: React.ReactNode;
   width?: number;
   screenColor?: string;
@@ -28,16 +28,16 @@ interface IPhone16PlusProps {
   className?: string;
 }
 
-export default function IPhone16Plus({
+export default function IPhone16({
   children,
   width = 320,
   screenColor = "#f2f2f2",
   showStatusBar = true,
   className = "",
-}: IPhone16PlusProps) {
+}: IPhone16Props) {
   return (
     <DeviceMockup
-      device={IPHONE_16_PLUS}
+      device={IPHONE_16}
       width={width}
       screenColor={screenColor}
       showStatusBar={showStatusBar}
