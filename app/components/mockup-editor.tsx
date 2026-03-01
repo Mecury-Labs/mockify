@@ -167,7 +167,7 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
             <AnimatePresence mode="wait">
               <motion.div
                 key={deviceKey}
-                layout
+                layout="position"
                 initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
@@ -181,7 +181,7 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
                     bounce: 0.15,
                   },
                 }}
-                style={{ willChange: "transform, opacity" }}
+                style={{ willChange: "transform, opacity", x: 0 }}
               >
                 <motion.div
                   animate={{ width: deviceWidth }}
