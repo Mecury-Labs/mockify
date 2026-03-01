@@ -168,7 +168,7 @@ export default function CodeModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="fixed inset-0 z-50"
+            className="fixed inset-0 z-50 flex items-center justify-center p-6"
             style={{ backgroundColor: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
             onClick={(e) => {
               if (e.target === overlayRef.current) onClose();
@@ -180,11 +180,8 @@ export default function CodeModal({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 10 }}
               transition={{ duration: 0.15, ease: [0.23, 1, 0.32, 1] }}
-              className="absolute top-1/2 left-1/2 w-full"
-              style={{
-                maxWidth: 640,
-                transform: "translate(-50%, -50%)",
-              }}
+              className="w-full"
+              style={{ maxWidth: 640 }}
             >
               <div
                 className="rounded-2xl overflow-hidden"
