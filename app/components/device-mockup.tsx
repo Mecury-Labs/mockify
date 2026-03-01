@@ -89,7 +89,7 @@ export default function DeviceMockup({
           height: screenH,
           borderRadius: screenRadius,
           overflow: "hidden",
-          boxShadow: "black 0px 0px 0px 1px",
+          boxShadow: "inset 0 0 0 0.5px rgba(0,0,0,0.1)",
           backgroundColor: screenColor,
           backfaceVisibility: "hidden",
           pointerEvents: "auto",
