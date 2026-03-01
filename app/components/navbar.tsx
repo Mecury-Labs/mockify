@@ -130,28 +130,6 @@ export default function Navbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-2.5">
-          {/* Playground link */}
-          <a
-            href="/playground"
-            className="hidden sm:flex items-center rounded-full cursor-pointer"
-            style={{
-              padding: "9px 16px",
-              color: "#6e6e73",
-              fontSize: "13px",
-              fontWeight: 500,
-              textDecoration: "none",
-              transition: "color 150ms ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "#1d1d1f";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "#6e6e73";
-            }}
-          >
-            Playground
-          </a>
-
           {/* GitHub button */}
           <a
             href="https://github.com/Mecury-Labs/mockify"
@@ -180,30 +158,6 @@ export default function Navbar() {
             <GitHubIcon />
             <span className="hidden sm:inline">Star</span>
             <StarIcon />
-          </a>
-
-          {/* Try Pro button */}
-          <a
-            href="/#pro"
-            className="flex items-center gap-1.5 rounded-full cursor-pointer"
-            style={{
-              padding: "9px 20px",
-              color: "#ffffff",
-              backgroundColor: "#1d1d1f",
-              transition: "opacity 150ms ease",
-              fontSize: "13px",
-              fontWeight: 600,
-              textDecoration: "none",
-              letterSpacing: "-0.01em",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.opacity = "0.85";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.opacity = "1";
-            }}
-          >
-            Try Pro
           </a>
         </div>
       </div>
