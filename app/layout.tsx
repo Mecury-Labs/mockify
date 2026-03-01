@@ -15,8 +15,22 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mockify — iPhone Device Mockups",
-  description: "Ultra-realistic iPhone mockups using official Apple Design Resources. All models from iPhone 13 through iPhone 17.",
+  title: "Mockify — iPhone Device Mockups for React",
+  description:
+    "Ultra-realistic iPhone mockups using official Apple Design Resources. 20 devices, 76 color variants. iPhone 13 through iPhone 17.",
+  openGraph: {
+    title: "Mockify — iPhone Device Mockups for React",
+    description:
+      "Ultra-realistic iPhone mockups using official Apple Design Resources. 20 devices, 76 color variants. Open source.",
+    siteName: "Mockify",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mockify — iPhone Device Mockups for React",
+    description:
+      "Ultra-realistic iPhone mockups using official Apple Design Resources. 20 devices, 76 color variants. Open source.",
+  },
 };
 
 export default function RootLayout({
