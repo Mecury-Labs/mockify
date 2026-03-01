@@ -398,13 +398,14 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
                     duration: 0.2,
                     bounce: 0,
                   }}
-                  className="absolute top-full left-0 mt-1 w-full rounded-xl overflow-hidden"
+                  className="absolute top-full left-0 mt-1 w-full rounded-xl"
                   style={{
                     backgroundColor: "#ffffff",
                     border: "1px solid #e5e5e5",
                     boxShadow:
                       "0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)",
-                    maxHeight: 280,
+                    maxHeight: 320,
+                    overflowX: "hidden",
                     overflowY: "auto",
                     zIndex: 50,
                     transformOrigin: "top left",
