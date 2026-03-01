@@ -83,6 +83,14 @@ export default function Examples() {
           <p className="mt-2 text-sm text-zinc-500">
             iPhone device mockups — all models
           </p>
+
+          <div
+            className="mt-6 inline-flex items-center gap-2 rounded-lg px-4 py-2.5 font-mono text-sm"
+            style={{ backgroundColor: "#1d1d1f", color: "#a1a1aa" }}
+          >
+            <span style={{ color: "#6e6e73" }}>$</span>
+            <span style={{ color: "#e5e5e5" }}>npx mockify add iphone16-pro</span>
+          </div>
         </div>
 
         <div className="flex flex-col gap-20">
