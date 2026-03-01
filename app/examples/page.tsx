@@ -20,6 +20,7 @@ import { IPHONE_17_PRO_MAX } from "../components/devices/iphone-17-pro-max";
 import { IPHONE_AIR } from "../components/devices/iphone-air";
 import DeviceCard from "../components/device-card";
 import type { DeviceConfig } from "../components/device-mockup";
+import ShellCommand from "../components/shell-command";
 
 const deviceGroups: {
   label: string;
@@ -84,16 +85,7 @@ export default function Examples() {
             iPhone device mockups — all models
           </p>
 
-          <div
-            className="mt-6 inline-flex items-center gap-2 rounded-lg px-4 py-2.5 font-mono text-sm"
-            style={{ backgroundColor: "#1d1d1f", color: "#a1a1aa" }}
-          >
-            <span style={{ color: "#6e6e73" }}>$</span>
-            <span style={{ color: "#c084fc" }}>npx</span>
-            <span style={{ color: "#e5e5e5" }}>mockify</span>
-            <span style={{ color: "#34d399" }}>add</span>
-            <span style={{ color: "#fbbf24" }}>iphone16-pro</span>
-          </div>
+          <ShellCommand command="npx mockify add iphone16-pro" />
         </div>
 
         <div className="flex flex-col gap-20">
