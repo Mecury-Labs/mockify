@@ -50,18 +50,18 @@ export default function ShellCommand({ command }: { command: string }) {
   return (
     <div
       className="mt-6 inline-flex items-center gap-2 rounded-lg px-4 py-2.5 font-mono text-sm"
-      style={{ backgroundColor: "#e8e8ed", color: "#6e6e73" }}
+      style={{ backgroundColor: "#1d1d1f", color: "#a1a1aa" }}
     >
-      <span style={{ color: "#a1a1aa" }}>$</span>
-      {tokens[0] && <span style={{ color: "#8b5cf6" }}>{tokens[0]}</span>}
-      {tokens[1] && <span style={{ color: "#1d1d1f" }}>{tokens[1]}</span>}
-      {tokens[2] && <span style={{ color: "#059669" }}>{tokens[2]}</span>}
-      {tokens[3] && <span style={{ color: "#d97706" }}>{tokens[3]}</span>}
+      <span style={{ color: "#6e6e73" }}>$</span>
+      {tokens[0] && <span style={{ color: "#c084fc" }}>{tokens[0]}</span>}
+      {tokens[1] && <span style={{ color: "#e5e5e5" }}>{tokens[1]}</span>}
+      {tokens[2] && <span style={{ color: "#34d399" }}>{tokens[2]}</span>}
+      {tokens[3] && <span style={{ color: "#fbbf24" }}>{tokens[3]}</span>}
 
       <button
         onClick={handleCopy}
         className="ml-1 cursor-pointer transition-colors"
-        style={{ color: copied ? "#059669" : "#a1a1aa" }}
+        style={{ color: copied ? "#34d399" : "#6e6e73" }}
         title="Copy to clipboard"
       >
         {copied ? <CheckIcon /> : <CopyIcon />}
