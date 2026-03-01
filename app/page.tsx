@@ -1,4 +1,4 @@
-import IPhoneMockup from "./components/iphone-mockup";
+import IPhone16Plus from "./components/devices/iphone-16-plus";
 
 export default function Home() {
   return (
@@ -13,7 +13,7 @@ export default function Home() {
           </p>
         </div>
 
-        <IPhoneMockup width={340}>
+        <IPhone16Plus width={340}>
           <button className="absolute inset-0 w-full h-full bg-[#f2f2f2] hover:opacity-70 transition-opacity flex items-center justify-center cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -32,7 +32,7 @@ export default function Home() {
               <path d="M12 5v14" />
             </svg>
           </button>
-        </IPhoneMockup>
+        </IPhone16Plus>
       </main>
     </div>
   );

@@ -1,44 +1,45 @@
 import Image from "next/image";
 
 /**
- * Ultra-realistic iPhone 16 Mockup Component
+ * Shared device mockup renderer.
  *
- * Uses the same technique as mockup.60fps.design:
- *   Layer 1 (back):  Screen content div with rounded corners
- *   Layer 2:         Status bar PNG overlay on screen
- *   Layer 3 (front): Real device frame PNG overlay (z-index on top)
+ * Uses the same layering technique as mockup.60fps.design:
+ *   Layer 1 (back):  Screen content div positioned behind the frame
+ *   Layer 2:         Status bar PNG overlay on the screen
+ *   Layer 3 (front): Real device frame PNG on top (pointer-events: none)
  *
- * The device frame PNG is a transparent image with the titanium frame,
- * bezel, side buttons, and camera cutout pre-rendered. The screen area
- * is transparent so user content shows through.
- *
- * All proportions reverse-engineered from the 60fps.design implementation:
- *   Frame PNG: 1167 x 2357 (native)
- *   Screen inset: left 5.263%, top 1.891%, width 89.474%, height 95.981%
- *   Screen corner radius: 12.456% of frame width
+ * Each device provides a `DeviceConfig` with its frame PNG path,
+ * native dimensions, screen inset proportions, and status bar asset.
  */
 
-// Proportions derived from the device frame PNG and 60fps.design source
-const DEVICE = {
-  // Native PNG dimensions
-  framePngWidth: 1167,
-  framePngHeight: 2357,
+export interface DeviceConfig {
+  /** Display name for alt text */
+  name: string;
+  /** Path to the device frame PNG in /public */
+  frameSrc: string;
+  /** Native width of the frame PNG */
+  framePngWidth: number;
+  /** Native height of the frame PNG */
+  framePngHeight: number;
+  /** Screen left offset as fraction of frame width */
+  screenLeftFraction: number;
+  /** Screen top offset as fraction of frame height */
+  screenTopFraction: number;
+  /** Screen width as fraction of frame width */
+  screenWidthFraction: number;
+  /** Screen height as fraction of frame height */
+  screenHeightFraction: number;
+  /** Screen corner radius as fraction of frame width */
+  screenRadiusFraction: number;
+  /** Path to the status bar PNG in /public */
+  statusBarSrc: string;
+  /** Status bar height as fraction of screen height */
+  statusBarHeightFraction: number;
+}
 
-  // Screen position as fraction of frame PNG dimensions
-  // These define where the transparent screen hole is in the PNG
-  screenLeftFraction: 0.052632,
-  screenTopFraction: 0.018913,
-  screenWidthFraction: 0.894737,
-  screenHeightFraction: 0.959811,
-
-  // Screen corner radius as fraction of frame width
-  screenRadiusFraction: 0.124557,
-
-  // Status bar height as fraction of screen height
-  statusBarHeightFraction: 0.064039,
-};
-
-interface IPhoneMockupProps {
+export interface DeviceMockupProps {
+  /** Device configuration */
+  device: DeviceConfig;
   /** Content to render inside the phone screen */
   children?: React.ReactNode;
   /** Width of the rendered device in pixels. Default: 320 */
@@ -51,26 +52,24 @@ interface IPhoneMockupProps {
   className?: string;
 }
 
-export default function IPhoneMockup({
+export default function DeviceMockup({
+  device,
   children,
   width = 320,
   screenColor = "#f2f2f2",
   showStatusBar = true,
   className = "",
-}: IPhoneMockupProps) {
-  // Frame dimensions at render size
+}: DeviceMockupProps) {
   const frameW = width;
-  const frameH = width * (DEVICE.framePngHeight / DEVICE.framePngWidth);
+  const frameH = width * (device.framePngHeight / device.framePngWidth);
 
-  // Screen dimensions and position (positioned behind the frame PNG)
-  const screenLeft = frameW * DEVICE.screenLeftFraction;
-  const screenTop = frameH * DEVICE.screenTopFraction;
-  const screenW = frameW * DEVICE.screenWidthFraction;
-  const screenH = frameH * DEVICE.screenHeightFraction;
-  const screenRadius = frameW * DEVICE.screenRadiusFraction;
+  const screenLeft = frameW * device.screenLeftFraction;
+  const screenTop = frameH * device.screenTopFraction;
+  const screenW = frameW * device.screenWidthFraction;
+  const screenH = frameH * device.screenHeightFraction;
+  const screenRadius = frameW * device.screenRadiusFraction;
 
-  // Status bar height
-  const statusBarH = screenH * DEVICE.statusBarHeightFraction;
+  const statusBarH = screenH * device.statusBarHeightFraction;
 
   return (
     <div
@@ -106,12 +105,12 @@ export default function IPhoneMockup({
             <Image
               alt="Status bar"
               className="absolute pointer-events-none"
-              src="/status-bar/iPhone 16 Status Bar Black.png"
-              width={DEVICE.framePngWidth}
+              src={device.statusBarSrc}
+              width={device.framePngWidth}
               height={Math.round(
-                DEVICE.framePngHeight *
-                  DEVICE.screenHeightFraction *
-                  DEVICE.statusBarHeightFraction
+                device.framePngHeight *
+                  device.screenHeightFraction *
+                  device.statusBarHeightFraction
               )}
               unoptimized
               style={{
@@ -132,11 +131,11 @@ export default function IPhoneMockup({
 
       {/* Layer 3: Device frame PNG (on top of everything) */}
       <Image
-        alt="iPhone 16 Plus"
+        alt={device.name}
         className="absolute pointer-events-none select-none"
-        src="/devices/iPhone 16 Plus.png"
-        width={DEVICE.framePngWidth}
-        height={DEVICE.framePngHeight}
+        src={device.frameSrc}
+        width={device.framePngWidth}
+        height={device.framePngHeight}
         unoptimized
         style={{
           left: 0,
