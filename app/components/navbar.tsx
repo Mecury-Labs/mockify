@@ -94,8 +94,9 @@ export default function Navbar() {
       style={{ transform: "translateX(-50%)" }}
     >
       <div
-        className="flex items-center gap-3 rounded-2xl px-4 py-2.5"
+        className="flex items-center justify-between rounded-2xl px-6 py-2.5"
         style={{
+          minWidth: 420,
           backgroundColor: "rgba(255, 255, 255, 0.85)",
           backdropFilter: "blur(12px) saturate(180%)",
           WebkitBackdropFilter: "blur(12px) saturate(180%)",
