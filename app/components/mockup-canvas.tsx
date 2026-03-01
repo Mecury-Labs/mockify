@@ -50,10 +50,13 @@ const MockupCanvas = forwardRef<HTMLDivElement, MockupCanvasProps>(
           }}
         />
 
-        {/* Device layer — position controlled by prop */}
+        {/* Device layer — position controlled by prop, padded from edges */}
         <div
-          className={`absolute inset-0 overflow-hidden flex justify-center ${POSITION_ALIGN[position]}`}
-          style={{ transition: "align-items 0.3s ease-out" }}
+          className={`absolute overflow-hidden flex justify-center ${POSITION_ALIGN[position]}`}
+          style={{
+            inset: "8%",
+            transition: "align-items 0.3s ease-out",
+          }}
         >
           {children}
         </div>
