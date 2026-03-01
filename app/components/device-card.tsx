@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DeviceMockup, { type DeviceConfig } from "./device-mockup";
+import MockupCanvas from "./mockup-canvas";
 
 const ZOOM_LEVELS = [0.5, 0.75, 0.9, 1, 1.25, 1.5, 1.75, 2] as const;
-const BASE_WIDTH = 200;
+
+/** At 1x zoom the device width is 47% of the canvas width */
+const BASE_DEVICE_RATIO = 0.47;
 
 const PlusIcon = () => (
   <svg
@@ -32,15 +35,7 @@ const ScreenPlaceholder = () => (
 );
 
 function formatZoom(z: number) {
-  if (z === 1) return "1x";
-  if (z === 0.5) return "0.5x";
-  if (z === 0.75) return "0.75x";
-  if (z === 0.9) return "0.9x";
-  if (z === 1.25) return "1.25x";
-  if (z === 1.5) return "1.5x";
-  if (z === 1.75) return "1.75x";
-  if (z === 2) return "2x";
-  return `${z}x`;
+  return z === 1 ? "1x" : `${z}x`;
 }
 
 interface DeviceCardProps {
@@ -53,25 +48,48 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
     config.defaultColor
   );
   const [zoom, setZoom] = useState(1);
+  const [canvasWidth, setCanvasWidth] = useState(0);
+  const canvasRef = useRef<HTMLDivElement>(null);
 
   const hasColors = config.colors.length > 0;
-  const deviceWidth = BASE_WIDTH * zoom;
+
+  // Observe canvas width to compute device pixel size
+  useEffect(() => {
+    const el = canvasRef.current;
+    if (!el) return;
+
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setCanvasWidth(entry.contentRect.width);
+      }
+    });
+    ro.observe(el);
+    // Initial measurement
+    setCanvasWidth(el.offsetWidth);
+
+    return () => ro.disconnect();
+  }, []);
+
+  const deviceWidth = canvasWidth * BASE_DEVICE_RATIO * zoom;
 
   return (
     <div className="flex flex-col items-center gap-3">
-      {/* Device container — scales with zoom */}
-      <div
-        className="flex items-center justify-center"
-        style={{
-          width: BASE_WIDTH * 2 + 16,
-          height: (BASE_WIDTH * 2 + 16) * (config.framePngHeight / config.framePngWidth),
-          overflow: "hidden",
-        }}
-      >
-        <DeviceMockup device={config} width={deviceWidth} color={selectedColor}>
-          <ScreenPlaceholder />
-        </DeviceMockup>
-      </div>
+      {/* Canvas with device inside */}
+      <MockupCanvas ref={canvasRef}>
+        {canvasWidth > 0 && (
+          <div
+            style={{ transition: "transform 0.3s ease-out" }}
+          >
+            <DeviceMockup
+              device={config}
+              width={deviceWidth}
+              color={selectedColor}
+            >
+              <ScreenPlaceholder />
+            </DeviceMockup>
+          </div>
+        )}
+      </MockupCanvas>
 
       <span className="text-xs font-medium text-zinc-500">{name}</span>
 
