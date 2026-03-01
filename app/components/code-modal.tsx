@@ -93,6 +93,9 @@ export default function MyComponent() {
   },
 ];
 
+/** Fixed height for the code area — prevents modal resize on tab switch */
+const CODE_AREA_HEIGHT = 340;
+
 /* ── Component ── */
 
 interface CodeModalProps {
@@ -162,6 +165,9 @@ export default function CodeModal({
 
   const html = htmlCache[cacheKey];
 
+  // Compute tab indicator position via index
+  const activeIndex = TABS.findIndex((t) => t.id === activeTab);
+
   return (
     <AnimatePresence>
       {open && (
@@ -182,7 +188,7 @@ export default function CodeModal({
               if (e.target === overlayRef.current) onClose();
             }}
           >
-            {/* Modal */}
+            {/* Modal — fixed layout, no height changes */}
             <motion.div
               initial={{ opacity: 0, scale: 0.96, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -243,9 +249,9 @@ export default function CodeModal({
                   </button>
                 </div>
 
-                {/* Tabs */}
+                {/* Tabs — CSS-only indicator, no layoutId */}
                 <div
-                  className="flex items-center gap-0 px-5"
+                  className="relative flex items-center px-5"
                   style={{ borderBottom: "1px solid #f0f0f0" }}
                 >
                   {TABS.map((tab) => {
@@ -274,40 +280,43 @@ export default function CodeModal({
                               ? "#1d1d1f"
                               : "#f0f0f0",
                             color: isActive ? "#ffffff" : "#a1a1aa",
-                            transition: "all 150ms ease",
+                            transition:
+                              "background-color 200ms ease, color 200ms ease",
                           }}
                         >
                           {tab.step}
                         </span>
                         {tab.label}
-                        {/* Active indicator */}
-                        {isActive && (
-                          <motion.div
-                            layoutId="tab-indicator"
-                            className="absolute bottom-0 left-3 right-3"
-                            style={{
-                              height: 2,
-                              backgroundColor: "#1d1d1f",
-                              borderRadius: 1,
-                            }}
-                            transition={{
-                              type: "spring",
-                              duration: 0.3,
-                              bounce: 0.1,
-                            }}
-                          />
-                        )}
                       </button>
                     );
                   })}
+
+                  {/* Sliding indicator — positioned via CSS transform, no layout animation */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: 0,
+                      left: 20,
+                      height: 2,
+                      width: 60,
+                      backgroundColor: "#1d1d1f",
+                      borderRadius: 1,
+                      transform: `translateX(${activeIndex * 80}px)`,
+                      transition:
+                        "transform 250ms cubic-bezier(0.23, 1, 0.32, 1)",
+                    }}
+                  />
                 </div>
 
-                {/* Code area */}
+                {/* Code area — fixed height, content crossfades */}
                 <div
                   className="relative"
-                  style={{ backgroundColor: "#fafafa" }}
+                  style={{
+                    backgroundColor: "#fafafa",
+                    height: CODE_AREA_HEIGHT,
+                  }}
                 >
-                  {/* Copy button — top right of code area */}
+                  {/* Copy button — stays fixed in top right */}
                   <button
                     onClick={handleCopy}
                     className="absolute top-3 right-3 z-10 flex items-center gap-1 cursor-pointer rounded-lg px-2.5 py-1.5 text-[11px] font-medium"
@@ -325,27 +334,34 @@ export default function CodeModal({
                     {copied ? "Copied!" : "Copy"}
                   </button>
 
-                  <div
-                    className="overflow-auto px-5 py-4"
-                    style={{ maxHeight: 380, minHeight: 80 }}
-                  >
-                    {html ? (
-                      <div
-                        className="text-[13px] leading-relaxed [&_pre]:!bg-transparent [&_pre]:!p-0 [&_code]:!bg-transparent"
-                        dangerouslySetInnerHTML={{ __html: html }}
-                      />
-                    ) : (
-                      <div
-                        className="text-xs font-mono"
-                        style={{ color: "#a1a1aa" }}
-                      >
-                        Loading...
-                      </div>
-                    )}
-                  </div>
+                  {/* Content crossfade */}
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                      key={activeTab}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.12, ease: "easeOut" }}
+                      className="absolute inset-0 overflow-auto px-5 py-4"
+                    >
+                      {html ? (
+                        <div
+                          className="text-[13px] leading-relaxed [&_pre]:!bg-transparent [&_pre]:!p-0 [&_code]:!bg-transparent"
+                          dangerouslySetInnerHTML={{ __html: html }}
+                        />
+                      ) : (
+                        <div
+                          className="text-xs font-mono"
+                          style={{ color: "#a1a1aa" }}
+                        >
+                          Loading...
+                        </div>
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
 
-                {/* Footer hint */}
+                {/* Footer */}
                 <div
                   className="px-5 py-3 flex items-center justify-between"
                   style={{
@@ -357,14 +373,19 @@ export default function CodeModal({
                     className="text-[11px]"
                     style={{ color: "#a1a1aa" }}
                   >
-                    {activeTab === "install" && "Install the package from npm"}
-                    {activeTab === "setup" && "Copy device frames to your public directory"}
-                    {activeTab === "usage" && "Import and use in any React component"}
+                    {activeTab === "install" &&
+                      "Install the package from npm"}
+                    {activeTab === "setup" &&
+                      "Copy device frames to your public directory"}
+                    {activeTab === "usage" &&
+                      "Import and use in any React component"}
                   </span>
                   {activeTab !== "usage" && (
                     <button
                       onClick={() => {
-                        const idx = TABS.findIndex((t) => t.id === activeTab);
+                        const idx = TABS.findIndex(
+                          (t) => t.id === activeTab
+                        );
                         if (idx < TABS.length - 1) {
                           setActiveTab(TABS[idx + 1].id);
                           setCopied(false);
