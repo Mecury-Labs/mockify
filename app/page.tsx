@@ -13,8 +13,8 @@ export default function Home() {
           </p>
         </div>
 
-        <IPhoneMockup scale={1.3} frameColor="black">
-          {/* Example screen content — a minimal iOS-style home screen */}
+        <IPhoneMockup width={340}>
+          {/* Example screen content -- a minimal iOS-style home screen */}
           <div className="flex h-full w-full flex-col bg-[#f2f2f7]">
             {/* Spacer for status bar area */}
             <div className="h-[15%]" />
