@@ -167,18 +167,17 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={deviceKey}
-                initial={shouldReduceMotion ? false : { opacity: 0, filter: "blur(4px)" }}
+                initial={shouldReduceMotion ? false : { opacity: 0, filter: "blur(2px)" }}
                 animate={{ opacity: 1, filter: "blur(0px)" }}
-                exit={{ opacity: 0, filter: "blur(4px)" }}
-                transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-                style={{ willChange: "opacity, filter" }}
+                exit={{ opacity: 0, filter: "blur(2px)" }}
+                transition={{ duration: 0.12, ease: [0.23, 1, 0.32, 1] }}
               >
                 <motion.div
                   animate={{ scale: zoom }}
                   transition={{
                     type: "spring",
-                    duration: 0.5,
-                    bounce: 0.1,
+                    duration: 0.3,
+                    bounce: 0.05,
                   }}
                   style={{ willChange: "transform" }}
                 >
