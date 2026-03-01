@@ -99,6 +99,12 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
     config.defaultColor
   );
 
+  // Zoom
+  const [zoom, setZoom] = useState(1);
+
+  // Canvas position
+  const [position, setPosition] = useState<CanvasPosition>("center");
+
   // Canvas background
   const [canvasBg, setCanvasBg] = useState<string | null>(null);
   const bgInputRef = useRef<HTMLInputElement>(null);
@@ -140,7 +146,7 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const deviceWidth = canvasWidth * BASE_DEVICE_RATIO;
+  const deviceWidth = canvasWidth * BASE_DEVICE_RATIO * zoom;
   const hasColors = config.colors.length > 0;
 
   return (
@@ -149,7 +155,7 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
       <div className="mx-auto w-full max-w-lg">
         <MockupCanvas
           ref={canvasRef}
-          position="center"
+          position={position}
           backgroundColor={canvasBg}
         >
           {canvasWidth > 0 && (
@@ -393,6 +399,86 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
               value={canvasBg ?? "#ffffff"}
               onChange={(e) => setCanvasBg(e.target.value)}
             />
+          </div>
+        </div>
+
+        {/* Position */}
+        <div
+          className="w-full"
+          style={{ height: 1, backgroundColor: "#f0f0f0" }}
+        />
+        <div className="px-4 py-3">
+          <span
+            className="block text-[10px] font-medium uppercase tracking-wider mb-2"
+            style={{ color: "#a1a1aa" }}
+          >
+            Position
+          </span>
+          <div className="grid grid-cols-3 gap-1">
+            {(
+              [
+                { value: "top", label: "Top", icon: "\u2191" },
+                { value: "center", label: "Center", icon: "\u00B7" },
+                { value: "bottom", label: "Bottom", icon: "\u2193" },
+              ] as const
+            ).map(({ value, label, icon }) => {
+              const isActive = position === value;
+              return (
+                <button
+                  key={value}
+                  onClick={() => setPosition(value)}
+                  className="cursor-pointer text-[11px] font-medium py-1 rounded-md"
+                  style={{
+                    transition:
+                      "background-color 150ms ease, color 150ms ease, border-color 150ms ease",
+                    backgroundColor: isActive ? "#1d1d1f" : "#f5f5f7",
+                    color: isActive ? "#ffffff" : "#6e6e73",
+                    border: isActive ? "1px solid #1d1d1f" : "1px solid #e5e5e5",
+                  }}
+                >
+                  {icon} {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Zoom */}
+        <div
+          className="w-full"
+          style={{ height: 1, backgroundColor: "#f0f0f0" }}
+        />
+        <div className="px-4 py-3">
+          <span
+            className="block text-[10px] font-medium uppercase tracking-wider mb-2"
+            style={{ color: "#a1a1aa" }}
+          >
+            Zoom
+          </span>
+          <div className="grid grid-cols-4 gap-1">
+            {([0.5, 0.75, 0.9, 1, 1.25, 1.5, 1.75, 2] as const).map(
+              (level) => {
+                const isActive = zoom === level;
+                return (
+                  <button
+                    key={level}
+                    onClick={() => setZoom(level)}
+                    className="cursor-pointer text-[11px] font-medium py-1 rounded-md"
+                    style={{
+                      transition:
+                        "background-color 150ms ease, color 150ms ease, border-color 150ms ease",
+                      backgroundColor: isActive ? "#1d1d1f" : "#f5f5f7",
+                      color: isActive ? "#ffffff" : "#6e6e73",
+                      border: isActive
+                        ? "1px solid #1d1d1f"
+                        : "1px solid #e5e5e5",
+                    }}
+                  >
+                    {level === 1 ? "1x" : `${level}x`}
+                  </button>
+                );
+              }
+            )}
           </div>
         </div>
       </div>
