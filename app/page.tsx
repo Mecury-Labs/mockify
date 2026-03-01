@@ -163,16 +163,23 @@ const GENERATIONS = [
   { label: "13 Series", year: "2021", devices: ["iPhone 13", "iPhone 13 Mini", "iPhone 13 Pro", "iPhone 13 Pro Max"] },
 ];
 
-/* ── Pro plan features ── */
-const PRO_FEATURES = [
+/* ── Plan features ── */
+const FREE_FEATURES = [
   "All 20+ iPhone models",
   "89 official color variants",
-  "Upload screenshots & videos",
-  "One-click code generation",
-  "React component library",
-  "npm package access",
+  "Upload screenshots",
   "Canvas background controls",
   "Zoom & position controls",
+  "One-click code generation",
+];
+
+const PRO_FEATURES = [
+  "Everything in Free",
+  "Export as PNG, SVG & MP4",
+  "Video trimming & looping",
+  "Batch export multiple devices",
+  "Custom watermark & branding",
+  "Priority support & updates",
 ];
 
 export default function Home() {
@@ -756,94 +763,201 @@ export default function Home() {
               className="inline-block text-[11px] font-medium uppercase tracking-widest mb-3"
               style={{ color: "#a1a1a6" }}
             >
-              Mockify Pro
+              Pricing
             </span>
             <h2
               className="text-3xl sm:text-4xl font-semibold tracking-tight"
               style={{ color: "#1d1d1f", letterSpacing: "-0.03em" }}
             >
-              The complete toolkit.
+              Simple pricing.
+              <br />
+              <span style={{ color: "#86868b" }}>Pay once, use forever.</span>
             </h2>
             <p
               className="mt-4 mx-auto"
-              style={{ maxWidth: 440, fontSize: 15, lineHeight: 1.55, color: "#86868b" }}
+              style={{ maxWidth: 460, fontSize: 15, lineHeight: 1.55, color: "#86868b" }}
             >
-              Everything included. No tiers, no limits, no nonsense.
+              Start free with the essentials. Unlock exports, video tools, and more with a one-time purchase.
             </p>
           </FadeSection>
 
-          <FadeSection>
-            <div
-              className="mx-auto rounded-3xl p-8 sm:p-10 relative overflow-hidden"
-              style={{
-                maxWidth: 560,
-                backgroundColor: "#ffffff",
-                border: "1px solid #e5e5e5",
-                boxShadow: "0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.03)",
-              }}
-            >
-              {/* Subtle gradient accent at top */}
+          {/* Two-card pricing grid */}
+          <div className="mx-auto grid grid-cols-1 md:grid-cols-2 gap-5" style={{ maxWidth: 720 }}>
+
+            {/* ── Free Card ── */}
+            <FadeSection>
               <div
-                className="absolute top-0 left-0 right-0 h-px"
+                className="rounded-3xl p-7 sm:p-8 relative h-full flex flex-col"
                 style={{
-                  background: "linear-gradient(90deg, transparent, #1d1d1f, transparent)",
-                  opacity: 0.15,
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e5e5e5",
                 }}
-              />
-
-              <div className="flex items-baseline gap-1.5 mb-1">
-                <span
-                  className="text-4xl font-semibold"
-                  style={{ color: "#1d1d1f", letterSpacing: "-0.04em" }}
-                >
-                  Free
-                </span>
-              </div>
-              <p
-                className="mb-8"
-                style={{ fontSize: 14, color: "#86868b" }}
               >
-                During beta. Pricing coming soon.
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-                {PRO_FEATURES.map((f) => (
-                  <div key={f} className="flex items-center gap-2.5">
-                    <CheckIcon />
-                    <span className="text-[13px]" style={{ color: "#1d1d1f" }}>
-                      {f}
+                <div className="mb-6">
+                  <span
+                    className="text-xs font-semibold uppercase tracking-wider"
+                    style={{ color: "#86868b", letterSpacing: "0.06em" }}
+                  >
+                    Free
+                  </span>
+                  <div className="flex items-baseline gap-1 mt-2">
+                    <span
+                      className="text-4xl font-semibold"
+                      style={{ color: "#1d1d1f", letterSpacing: "-0.04em" }}
+                    >
+                      $0
                     </span>
                   </div>
-                ))}
+                  <p
+                    className="mt-1.5"
+                    style={{ fontSize: 13, color: "#a1a1a6" }}
+                  >
+                    Forever free. No limits.
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3 mb-8 flex-1">
+                  {FREE_FEATURES.map((f) => (
+                    <div key={f} className="flex items-center gap-2.5">
+                      <CheckIcon />
+                      <span className="text-[13px]" style={{ color: "#1d1d1f" }}>
+                        {f}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <Link
+                  href="/playground"
+                  className="flex items-center justify-center gap-2 w-full rounded-xl font-semibold"
+                  style={{
+                    padding: "13px 24px",
+                    fontSize: 14,
+                    backgroundColor: "#f5f5f7",
+                    color: "#1d1d1f",
+                    textDecoration: "none",
+                    border: "1px solid #e5e5e5",
+                    transition: "background-color 150ms ease, border-color 150ms ease",
+                    letterSpacing: "-0.01em",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#ebebed";
+                    e.currentTarget.style.borderColor = "#d5d5d5";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#f5f5f7";
+                    e.currentTarget.style.borderColor = "#e5e5e5";
+                  }}
+                >
+                  Get Started
+                  <ArrowRightIcon />
+                </Link>
               </div>
+            </FadeSection>
 
-              <Link
-                href="/playground"
-                className="flex items-center justify-center gap-2 w-full rounded-xl font-semibold"
+            {/* ── Pro Card ── */}
+            <FadeSection delay={0.08}>
+              <div
+                className="rounded-3xl p-7 sm:p-8 relative h-full flex flex-col"
                 style={{
-                  padding: "14px 24px",
-                  fontSize: 14,
                   backgroundColor: "#1d1d1f",
-                  color: "#ffffff",
-                  textDecoration: "none",
-                  transition: "opacity 150ms ease",
-                  letterSpacing: "-0.01em",
+                  border: "1px solid #3a3a3c",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.16), 0 2px 8px rgba(0,0,0,0.08)",
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.88"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
               >
-                Get Started Free
-                <ArrowRightIcon />
-              </Link>
+                {/* Accent line */}
+                <div
+                  className="absolute top-0 left-6 right-6 h-px"
+                  style={{
+                    background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent)",
+                  }}
+                />
 
-              <p
-                className="text-center mt-4"
-                style={{ fontSize: 12, color: "#a1a1a6" }}
-              >
-                No credit card. No sign-up. Just open and use.
-              </p>
-            </div>
-          </FadeSection>
+                {/* Popular badge */}
+                <div
+                  className="absolute -top-3 left-1/2 rounded-full px-3 py-1"
+                  style={{
+                    transform: "translateX(-50%)",
+                    backgroundColor: "#ffffff",
+                    fontSize: 10,
+                    fontWeight: 600,
+                    color: "#1d1d1f",
+                    letterSpacing: "0.02em",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  Most Popular
+                </div>
+
+                <div className="mb-6">
+                  <span
+                    className="text-xs font-semibold uppercase tracking-wider"
+                    style={{ color: "rgba(255,255,255,0.5)", letterSpacing: "0.06em" }}
+                  >
+                    Pro
+                  </span>
+                  <div className="flex items-baseline gap-1.5 mt-2">
+                    <span
+                      className="text-4xl font-semibold"
+                      style={{ color: "#f5f5f7", letterSpacing: "-0.04em" }}
+                    >
+                      $25
+                    </span>
+                    <span
+                      className="text-sm font-medium"
+                      style={{ color: "rgba(255,255,255,0.4)" }}
+                    >
+                      one-time
+                    </span>
+                  </div>
+                  <p
+                    className="mt-1.5"
+                    style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}
+                  >
+                    Lifetime access. No subscriptions.
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3 mb-8 flex-1">
+                  {PRO_FEATURES.map((f) => (
+                    <div key={f} className="flex items-center gap-2.5">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f5f5f7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      <span className="text-[13px]" style={{ color: "#f5f5f7" }}>
+                        {f}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  className="flex items-center justify-center gap-2 w-full rounded-xl font-semibold cursor-pointer"
+                  style={{
+                    padding: "13px 24px",
+                    fontSize: 14,
+                    backgroundColor: "#ffffff",
+                    color: "#1d1d1f",
+                    border: "none",
+                    transition: "opacity 150ms ease",
+                    letterSpacing: "-0.01em",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.88"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+                >
+                  Get Lifetime Access
+                  <ArrowRightIcon />
+                </button>
+
+                <p
+                  className="text-center mt-3.5"
+                  style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}
+                >
+                  One payment. Yours forever.
+                </p>
+              </div>
+            </FadeSection>
+          </div>
         </div>
       </section>
 
