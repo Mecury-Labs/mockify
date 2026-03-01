@@ -613,9 +613,10 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
                   style={{
                     transition:
                       "background-color 150ms ease, color 150ms ease, border-color 150ms ease",
-                    backgroundColor: isActive ? "#1d1d1f" : "#f5f5f7",
-                    color: isActive ? "#ffffff" : "#6e6e73",
-                    border: isActive ? "1px solid #1d1d1f" : "1px solid #e5e5e5",
+                    backgroundColor: isActive ? "#f0f0f0" : "#f5f5f7",
+                    color: isActive ? "#1d1d1f" : "#6e6e73",
+                    border: isActive ? "1px solid #d0d0d0" : "1px solid #e5e5e5",
+                    fontWeight: isActive ? 600 : 400,
                   }}
                 >
                   {icon} {label}
@@ -649,11 +650,12 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
                     style={{
                       transition:
                         "background-color 150ms ease, color 150ms ease, border-color 150ms ease",
-                      backgroundColor: isActive ? "#1d1d1f" : "#f5f5f7",
-                      color: isActive ? "#ffffff" : "#6e6e73",
+                      backgroundColor: isActive ? "#f0f0f0" : "#f5f5f7",
+                      color: isActive ? "#1d1d1f" : "#6e6e73",
                       border: isActive
-                        ? "1px solid #1d1d1f"
+                        ? "1px solid #d0d0d0"
                         : "1px solid #e5e5e5",
+                      fontWeight: isActive ? 600 : 400,
                     }}
                   >
                     {level === 1 ? "1x" : `${level}x`}
@@ -674,15 +676,16 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
             onClick={() => setCodeModalOpen(true)}
             className="w-full flex items-center justify-center gap-2 cursor-pointer rounded-lg px-3 py-2 text-xs font-medium"
             style={{
-              backgroundColor: "#1d1d1f",
-              color: "#ffffff",
-              transition: "opacity 150ms ease",
+              backgroundColor: "#f0f0f0",
+              color: "#1d1d1f",
+              border: "1px solid #d0d0d0",
+              transition: "background-color 150ms ease",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.opacity = "0.85";
+              e.currentTarget.style.backgroundColor = "#e8e8e8";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.opacity = "1";
+              e.currentTarget.style.backgroundColor = "#f0f0f0";
             }}
           >
             <svg

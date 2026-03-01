@@ -131,7 +131,7 @@ export default function CodeModal({
 
     codeToHtml(code, {
       lang: "tsx",
-      theme: "github-dark-default",
+      theme: "github-light-default",
     }).then((result) => {
       if (!cancelled) setHtml(result);
     });
@@ -169,7 +169,7 @@ export default function CodeModal({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-6"
-            style={{ backgroundColor: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
+            style={{ backgroundColor: "rgba(0,0,0,0.2)", backdropFilter: "blur(8px)" }}
             onClick={(e) => {
               if (e.target === overlayRef.current) onClose();
             }}
@@ -186,19 +186,19 @@ export default function CodeModal({
               <div
                 className="rounded-2xl overflow-hidden"
                 style={{
-                  backgroundColor: "#0d1117",
-                  border: "1px solid #30363d",
-                  boxShadow: "0 16px 48px rgba(0,0,0,0.4)",
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e5e5e5",
+                  boxShadow: "0 16px 48px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06)",
                 }}
               >
                 {/* Header */}
                 <div
                   className="flex items-center justify-between px-5 py-3"
-                  style={{ borderBottom: "1px solid #21262d" }}
+                  style={{ borderBottom: "1px solid #f0f0f0" }}
                 >
                   <span
                     className="text-xs font-medium"
-                    style={{ color: "#8b949e" }}
+                    style={{ color: "#6e6e73" }}
                   >
                     Usage — {deviceName}
                   </span>
@@ -207,9 +207,9 @@ export default function CodeModal({
                       onClick={handleCopy}
                       className="flex items-center gap-1 cursor-pointer rounded-md px-2 py-1 text-xs"
                       style={{
-                        color: copied ? "#3fb950" : "#8b949e",
+                        color: copied ? "#34C759" : "#6e6e73",
                         backgroundColor: "transparent",
-                        border: "1px solid #30363d",
+                        border: "1px solid #e5e5e5",
                         transition: "color 150ms ease",
                       }}
                     >
@@ -220,9 +220,9 @@ export default function CodeModal({
                       onClick={onClose}
                       className="flex items-center justify-center cursor-pointer rounded-md p-1"
                       style={{
-                        color: "#8b949e",
+                        color: "#6e6e73",
                         backgroundColor: "transparent",
-                        border: "1px solid #30363d",
+                        border: "1px solid #e5e5e5",
                         transition: "color 150ms ease",
                       }}
                     >
@@ -234,7 +234,7 @@ export default function CodeModal({
                 {/* Code */}
                 <div
                   className="overflow-auto px-5 py-4"
-                  style={{ maxHeight: 480 }}
+                  style={{ maxHeight: 480, backgroundColor: "#fafafa" }}
                 >
                   {html ? (
                     <div
@@ -244,7 +244,7 @@ export default function CodeModal({
                   ) : (
                     <div
                       className="text-xs font-mono"
-                      style={{ color: "#8b949e" }}
+                      style={{ color: "#a1a1aa" }}
                     >
                       Loading...
                     </div>

@@ -9,7 +9,7 @@ export default function ExamplesLayout({
      * On overscroll (iOS / macOS bounce), the dark color peeks through
      * above the lighter content area.
      */
-    <div className="min-h-screen" style={{ backgroundColor: "#1d1d1f" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "#f0f0f0" }}>
       {children}
     </div>
   );

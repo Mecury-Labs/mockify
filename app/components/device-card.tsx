@@ -170,9 +170,10 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
               className="cursor-pointer text-[11px] font-medium py-1 rounded-md"
               style={{
                 transition: "background-color 150ms ease, color 150ms ease, border-color 150ms ease",
-                backgroundColor: isActive ? "#1d1d1f" : "#ffffff",
-                color: isActive ? "#ffffff" : "#6e6e73",
-                border: isActive ? "none" : "1px solid #d2d2d7",
+                backgroundColor: isActive ? "#f0f0f0" : "#ffffff",
+                color: isActive ? "#1d1d1f" : "#6e6e73",
+                border: isActive ? "1px solid #d0d0d0" : "1px solid #d2d2d7",
+                fontWeight: isActive ? 600 : 400,
               }}
             >
               {formatZoom(level)}
@@ -192,9 +193,10 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
               className="cursor-pointer text-[11px] font-medium py-1 rounded-md"
               style={{
                 transition: "background-color 150ms ease, color 150ms ease, border-color 150ms ease",
-                backgroundColor: isActive ? "#1d1d1f" : "#ffffff",
-                color: isActive ? "#ffffff" : "#6e6e73",
-                border: isActive ? "none" : "1px solid #d2d2d7",
+                backgroundColor: isActive ? "#f0f0f0" : "#ffffff",
+                color: isActive ? "#1d1d1f" : "#6e6e73",
+                border: isActive ? "1px solid #d0d0d0" : "1px solid #d2d2d7",
+                fontWeight: isActive ? 600 : 400,
               }}
             >
               {icon} {label}

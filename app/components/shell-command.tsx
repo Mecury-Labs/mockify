@@ -50,19 +50,19 @@ export default function ShellCommand({ command }: { command: string }) {
   return (
     <div
       className="mt-6 inline-flex items-center gap-2 rounded-lg px-4 py-2.5 font-mono text-sm"
-      style={{ backgroundColor: "#1d1d1f", color: "#a1a1aa" }}
+      style={{ backgroundColor: "#f5f5f7", color: "#6e6e73", border: "1px solid #e5e5e5" }}
     >
-      <span style={{ color: "#6e6e73" }}>$</span>
-      {tokens[0] && <span style={{ color: "#c084fc" }}>{tokens[0]}</span>}
-      {tokens[1] && <span style={{ color: "#e5e5e5" }}>{tokens[1]}</span>}
-      {tokens[2] && <span style={{ color: "#34d399" }}>{tokens[2]}</span>}
-      {tokens[3] && <span style={{ color: "#fbbf24" }}>{tokens[3]}</span>}
+      <span style={{ color: "#a1a1aa" }}>$</span>
+      {tokens[0] && <span style={{ color: "#8250df" }}>{tokens[0]}</span>}
+      {tokens[1] && <span style={{ color: "#1d1d1f" }}>{tokens[1]}</span>}
+      {tokens[2] && <span style={{ color: "#1a7f37" }}>{tokens[2]}</span>}
+      {tokens[3] && <span style={{ color: "#953800" }}>{tokens[3]}</span>}
 
       <button
         onClick={handleCopy}
         className="ml-1 cursor-pointer touch-hitbox"
         style={{
-          color: copied ? "#34d399" : "#6e6e73",
+          color: copied ? "#1a7f37" : "#a1a1aa",
           transition: "color 150ms ease",
         }}
         title="Copy to clipboard"
