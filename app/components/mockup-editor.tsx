@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { toast } from "sonner";
 import DeviceMockup, { type DeviceConfig } from "./device-mockup";
 import MockupCanvas, { type CanvasPosition } from "./mockup-canvas";
 
@@ -23,6 +24,56 @@ const CANVAS_BG_PRESETS: {
 ];
 
 const BASE_DEVICE_RATIO = 0.47;
+
+/** Tolerance for aspect ratio comparison (5%) */
+const ASPECT_RATIO_TOLERANCE = 0.05;
+
+/** Compute the screen aspect ratio for a device config */
+function getScreenAspectRatio(config: DeviceConfig): number {
+  const w = config.screenWidthFraction * config.framePngWidth;
+  const h = config.screenHeightFraction * config.framePngHeight;
+  return w / h;
+}
+
+/** Measure dimensions of an image file */
+function measureImage(file: File): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      resolve({ width: img.naturalWidth, height: img.naturalHeight });
+      URL.revokeObjectURL(url);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Failed to load image"));
+    };
+    img.src = url;
+  });
+}
+
+/** Measure dimensions of a video file */
+function measureVideo(file: File): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const video = document.createElement("video");
+    video.preload = "metadata";
+    video.onloadedmetadata = () => {
+      resolve({ width: video.videoWidth, height: video.videoHeight });
+      URL.revokeObjectURL(url);
+    };
+    video.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Failed to load video"));
+    };
+    video.src = url;
+  });
+}
+
+interface ScreenContent {
+  type: "image" | "video";
+  url: string;
+}
 
 /* ── Icons ── */
 
@@ -64,15 +115,6 @@ const ChevronIcon = ({ open }: { open: boolean }) => (
   </svg>
 );
 
-const ScreenPlaceholder = () => (
-  <button
-    className="absolute inset-0 w-full h-full bg-[#f2f2f2] hover:opacity-70 flex items-center justify-center cursor-pointer"
-    style={{ transition: "opacity 150ms ease" }}
-  >
-    <PlusIcon />
-  </button>
-);
-
 /* ── Types ── */
 
 export interface DeviceEntry {
@@ -110,6 +152,10 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
   const [canvasBg, setCanvasBg] = useState<string | null>(null);
   const bgInputRef = useRef<HTMLInputElement>(null);
 
+  // Screen content
+  const [screenContent, setScreenContent] = useState<ScreenContent | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Canvas sizing
   const [canvasWidth, setCanvasWidth] = useState(0);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -146,6 +192,68 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  // Handle file selection
+  const handleFileSelect = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      // Reset input so the same file can be re-selected
+      e.target.value = "";
+
+      const isVideo = file.type.startsWith("video/");
+      const isImage = file.type.startsWith("image/");
+
+      if (!isVideo && !isImage) {
+        toast.error("Unsupported file type", {
+          description: "Please select an image or video file.",
+        });
+        return;
+      }
+
+      try {
+        const dims = isVideo
+          ? await measureVideo(file)
+          : await measureImage(file);
+
+        const fileAspect = dims.width / dims.height;
+        const screenAspect = getScreenAspectRatio(config);
+        const diff = Math.abs(fileAspect - screenAspect) / screenAspect;
+
+        if (diff > ASPECT_RATIO_TOLERANCE) {
+          const expected = `${Math.round(screenAspect * 1000) / 1000}`;
+          const got = `${Math.round(fileAspect * 1000) / 1000}`;
+          toast.error("Aspect ratio mismatch", {
+            description: `${current.name} screen expects ~${expected} ratio but your file is ${got} (${dims.width}x${dims.height}). Use a ${Math.round(config.screenWidthFraction * config.framePngWidth)}x${Math.round(config.screenHeightFraction * config.framePngHeight)} screenshot.`,
+          });
+          return;
+        }
+
+        // Revoke previous URL if any
+        if (screenContent) {
+          URL.revokeObjectURL(screenContent.url);
+        }
+
+        const url = URL.createObjectURL(file);
+        setScreenContent({ type: isVideo ? "video" : "image", url });
+      } catch {
+        toast.error("Failed to load file", {
+          description: "The file could not be read. Please try another.",
+        });
+      }
+    },
+    [config, current.name, screenContent]
+  );
+
+  // Clear screen content when device changes
+  useEffect(() => {
+    if (screenContent) {
+      URL.revokeObjectURL(screenContent.url);
+      setScreenContent(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deviceIndex]);
 
   const shouldReduceMotion = useReducedMotion();
   const deviceWidth = canvasWidth * BASE_DEVICE_RATIO * zoom;
@@ -187,7 +295,38 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
                     width={deviceWidth}
                     color={selectedColor}
                   >
-                    <ScreenPlaceholder />
+                    {screenContent ? (
+                      <div
+                        className="absolute inset-0 w-full h-full cursor-pointer"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        {screenContent.type === "image" ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={screenContent.url}
+                            alt="Screen content"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <video
+                            src={screenContent.url}
+                            className="w-full h-full object-cover"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                          />
+                        )}
+                      </div>
+                    ) : (
+                      <button
+                        className="absolute inset-0 w-full h-full bg-[#f2f2f2] hover:opacity-70 flex items-center justify-center cursor-pointer"
+                        style={{ transition: "opacity 150ms ease" }}
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <PlusIcon />
+                      </button>
+                    )}
                   </DeviceMockup>
                 </motion.div>
               </motion.div>
@@ -195,6 +334,15 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
           )}
         </MockupCanvas>
       </div>
+
+      {/* Hidden file input for screen content */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*,video/*"
+        className="sr-only"
+        onChange={handleFileSelect}
+      />
 
       {/* Fixed sidebar panel on the right */}
       <div
