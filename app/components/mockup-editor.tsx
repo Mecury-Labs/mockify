@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import DeviceMockup, { type DeviceConfig } from "./device-mockup";
 import MockupCanvas, { type CanvasPosition } from "./mockup-canvas";
 
@@ -146,8 +147,12 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  const shouldReduceMotion = useReducedMotion();
   const deviceWidth = canvasWidth * BASE_DEVICE_RATIO * zoom;
   const hasColors = config.colors.length > 0;
+
+  // Unique key for AnimatePresence — changes on device or color swap
+  const deviceKey = `${current.name}-${selectedColor ?? "default"}`;
 
   return (
     <>
@@ -159,21 +164,44 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
           backgroundColor={canvasBg}
         >
           {canvasWidth > 0 && (
-            <div
-              style={{
-                transition:
-                  "transform 250ms cubic-bezier(0.77, 0, 0.175, 1)",
-                willChange: "transform",
-              }}
-            >
-              <DeviceMockup
-                device={config}
-                width={deviceWidth}
-                color={selectedColor}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={deviceKey}
+                layout
+                initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{
+                  type: "spring",
+                  duration: 0.35,
+                  bounce: 0.15,
+                  layout: {
+                    type: "spring",
+                    duration: 0.4,
+                    bounce: 0.15,
+                  },
+                }}
+                style={{ willChange: "transform, opacity" }}
               >
-                <ScreenPlaceholder />
-              </DeviceMockup>
-            </div>
+                <motion.div
+                  animate={{ width: deviceWidth }}
+                  transition={{
+                    type: "spring",
+                    duration: 0.5,
+                    bounce: 0.1,
+                  }}
+                  style={{ width: deviceWidth }}
+                >
+                  <DeviceMockup
+                    device={config}
+                    width={deviceWidth}
+                    color={selectedColor}
+                  >
+                    <ScreenPlaceholder />
+                  </DeviceMockup>
+                </motion.div>
+              </motion.div>
+            </AnimatePresence>
           )}
         </MockupCanvas>
       </div>
@@ -211,53 +239,64 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
               <ChevronIcon open={dropdownOpen} />
             </button>
 
-            {dropdownOpen && (
-              <div
-                className="absolute top-full left-0 mt-1 w-full rounded-xl overflow-hidden"
-                style={{
-                  backgroundColor: "#ffffff",
-                  border: "1px solid #e5e5e5",
-                  boxShadow:
-                    "0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)",
-                  maxHeight: 280,
-                  overflowY: "auto",
-                  zIndex: 50,
-                }}
-              >
-                {devices.map((d, i) => {
-                  const isActive = i === deviceIndex;
-                  return (
-                    <button
-                      key={d.name}
-                      onClick={() => {
-                        setDeviceIndex(i);
-                        setDropdownOpen(false);
-                      }}
-                      className="w-full text-left px-3 py-2 text-xs cursor-pointer"
-                      style={{
-                        backgroundColor: isActive
-                          ? "#f5f5f7"
-                          : "transparent",
-                        color: isActive ? "#1d1d1f" : "#6e6e73",
-                        fontWeight: isActive ? 600 : 400,
-                        transition: "background-color 150ms ease",
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isActive)
-                          e.currentTarget.style.backgroundColor = "#fafafa";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = isActive
-                          ? "#f5f5f7"
-                          : "transparent";
-                      }}
-                    >
-                      {d.name}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
+            <AnimatePresence>
+              {dropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                  transition={{
+                    type: "spring",
+                    duration: 0.2,
+                    bounce: 0,
+                  }}
+                  className="absolute top-full left-0 mt-1 w-full rounded-xl overflow-hidden"
+                  style={{
+                    backgroundColor: "#ffffff",
+                    border: "1px solid #e5e5e5",
+                    boxShadow:
+                      "0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)",
+                    maxHeight: 280,
+                    overflowY: "auto",
+                    zIndex: 50,
+                    transformOrigin: "top left",
+                  }}
+                >
+                  {devices.map((d, i) => {
+                    const isActive = i === deviceIndex;
+                    return (
+                      <button
+                        key={d.name}
+                        onClick={() => {
+                          setDeviceIndex(i);
+                          setDropdownOpen(false);
+                        }}
+                        className="w-full text-left px-3 py-2 text-xs cursor-pointer"
+                        style={{
+                          backgroundColor: isActive
+                            ? "#f5f5f7"
+                            : "transparent",
+                          color: isActive ? "#1d1d1f" : "#6e6e73",
+                          fontWeight: isActive ? 600 : 400,
+                          transition: "background-color 150ms ease",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!isActive)
+                            e.currentTarget.style.backgroundColor = "#fafafa";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = isActive
+                            ? "#f5f5f7"
+                            : "transparent";
+                        }}
+                      >
+                        {d.name}
+                      </button>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
