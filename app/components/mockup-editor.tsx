@@ -169,6 +169,11 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
     setSelectedColor(config.defaultColor);
   }, [config]);
 
+  // Reset position to center when zoom returns to 1x
+  useEffect(() => {
+    if (zoom === 1) setPosition("center");
+  }, [zoom]);
+
   // Observe canvas width
   useEffect(() => {
     const el = canvasRef.current;
@@ -589,7 +594,14 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
           className="w-full"
           style={{ height: 1, backgroundColor: "#f0f0f0" }}
         />
-        <div className="px-4 py-3">
+        <div
+          className="px-4 py-3"
+          style={{
+            opacity: zoom === 1 ? 0.4 : 1,
+            pointerEvents: zoom === 1 ? "none" : "auto",
+            transition: "opacity 150ms ease",
+          }}
+        >
           <span
             className="block text-[10px] font-medium uppercase tracking-wider mb-2"
             style={{ color: "#a1a1aa" }}
