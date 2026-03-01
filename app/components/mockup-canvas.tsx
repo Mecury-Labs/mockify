@@ -24,30 +24,38 @@ interface MockupCanvasProps {
   children: React.ReactNode;
   /** Vertical position of the device within the canvas. Default: "center" */
   position?: CanvasPosition;
+  /** Canvas background color. When set, shows a solid color instead of the checkered pattern. null/undefined = checkered (transparent). */
+  backgroundColor?: string | null;
   /** Additional className for the outer wrapper */
   className?: string;
 }
 
 const MockupCanvas = forwardRef<HTMLDivElement, MockupCanvasProps>(
-  function MockupCanvas({ children, position = "center", className = "" }, ref) {
+  function MockupCanvas({ children, position = "center", backgroundColor, className = "" }, ref) {
+    const hasBg = backgroundColor != null && backgroundColor !== "";
+
     return (
       <div
         ref={ref}
         className={`relative aspect-square w-full rounded-3xl shadow-lg overflow-hidden ${className}`}
       >
-        {/* Checkered transparency pattern */}
+        {/* Background layer: solid color when set, checkered pattern when transparent */}
         <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: [
-              "linear-gradient(45deg, #e5e5e5 25%, transparent 25%)",
-              "linear-gradient(-45deg, #e5e5e5 25%, transparent 25%)",
-              "linear-gradient(45deg, transparent 75%, #e5e5e5 75%)",
-              "linear-gradient(-45deg, transparent 75%, #e5e5e5 75%)",
-            ].join(", "),
-            backgroundSize: "20px 20px",
-            backgroundPosition: "0px 0px, 0px 10px, 10px -10px, -10px 0px",
-          }}
+          className="absolute inset-0 transition-colors duration-200"
+          style={
+            hasBg
+              ? { backgroundColor }
+              : {
+                  backgroundImage: [
+                    "linear-gradient(45deg, #e5e5e5 25%, transparent 25%)",
+                    "linear-gradient(-45deg, #e5e5e5 25%, transparent 25%)",
+                    "linear-gradient(45deg, transparent 75%, #e5e5e5 75%)",
+                    "linear-gradient(-45deg, transparent 75%, #e5e5e5 75%)",
+                  ].join(", "),
+                  backgroundSize: "20px 20px",
+                  backgroundPosition: "0px 0px, 0px 10px, 10px -10px, -10px 0px",
+                }
+          }
         />
 
         {/* Device layer — position controlled by prop, padded top/bottom */}

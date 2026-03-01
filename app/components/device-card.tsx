@@ -12,6 +12,18 @@ const POSITIONS: { value: CanvasPosition; label: string; icon: string }[] = [
   { value: "bottom", label: "Bottom", icon: "\u2193" },
 ];
 
+/** Preset canvas background colors (null = transparent/checkered) */
+const CANVAS_BG_PRESETS: { value: string | null; swatch: string; label: string }[] = [
+  { value: null, swatch: "transparent", label: "Transparent" },
+  { value: "#ffffff", swatch: "#ffffff", label: "White" },
+  { value: "#000000", swatch: "#000000", label: "Black" },
+  { value: "#0A84FF", swatch: "#0A84FF", label: "Blue" },
+  { value: "#FF3B30", swatch: "#FF3B30", label: "Red" },
+  { value: "#FF9500", swatch: "#FF9500", label: "Orange" },
+  { value: "#34C759", swatch: "#34C759", label: "Green" },
+  { value: "#AF52DE", swatch: "#AF52DE", label: "Purple" },
+];
+
 /** At 1x zoom the device width is 47% of the canvas width */
 const BASE_DEVICE_RATIO = 0.47;
 
@@ -55,8 +67,10 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
   );
   const [zoom, setZoom] = useState(1);
   const [position, setPosition] = useState<CanvasPosition>("center");
+  const [canvasBg, setCanvasBg] = useState<string | null>(null);
   const [canvasWidth, setCanvasWidth] = useState(0);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const colorInputRef = useRef<HTMLInputElement>(null);
 
   const hasColors = config.colors.length > 0;
 
@@ -82,7 +96,7 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
   return (
     <div className="flex flex-col items-center gap-3">
       {/* Canvas with device inside */}
-      <MockupCanvas ref={canvasRef} position={position}>
+      <MockupCanvas ref={canvasRef} position={position} backgroundColor={canvasBg}>
         {canvasWidth > 0 && (
           <div
             style={{ transition: "transform 0.3s ease-out" }}
@@ -179,6 +193,86 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
             </button>
           );
         })}
+      </div>
+
+      {/* Canvas background color */}
+      <div className="flex items-center gap-1.5">
+        {CANVAS_BG_PRESETS.map((preset) => {
+          const isActive = canvasBg === preset.value;
+          const isTransparent = preset.value === null;
+          return (
+            <button
+              key={preset.label}
+              title={preset.label}
+              onClick={() => setCanvasBg(preset.value)}
+              className="relative flex items-center justify-center cursor-pointer"
+              style={{ width: 18, height: 18 }}
+            >
+              {isActive && (
+                <span
+                  className="absolute inset-0 rounded-full"
+                  style={{ border: "1.5px solid #999" }}
+                />
+              )}
+              <span
+                className="rounded-full"
+                style={{
+                  width: 12,
+                  height: 12,
+                  backgroundColor: isTransparent ? undefined : preset.swatch,
+                  border: "0.5px solid rgba(0,0,0,0.12)",
+                  ...(isTransparent
+                    ? {
+                        backgroundImage: [
+                          "linear-gradient(45deg, #ccc 25%, transparent 25%)",
+                          "linear-gradient(-45deg, #ccc 25%, transparent 25%)",
+                          "linear-gradient(45deg, transparent 75%, #ccc 75%)",
+                          "linear-gradient(-45deg, transparent 75%, #ccc 75%)",
+                        ].join(", "),
+                        backgroundSize: "6px 6px",
+                        backgroundPosition:
+                          "0px 0px, 0px 3px, 3px -3px, -3px 0px",
+                      }
+                    : {}),
+                }}
+              />
+            </button>
+          );
+        })}
+
+        {/* Custom color picker */}
+        <button
+          title="Custom color"
+          onClick={() => colorInputRef.current?.click()}
+          className="relative flex items-center justify-center cursor-pointer"
+          style={{ width: 18, height: 18 }}
+        >
+          {/* Show ring if current bg is a custom color (not in presets) */}
+          {canvasBg !== null &&
+            !CANVAS_BG_PRESETS.some((p) => p.value === canvasBg) && (
+              <span
+                className="absolute inset-0 rounded-full"
+                style={{ border: "1.5px solid #999" }}
+              />
+            )}
+          <span
+            className="rounded-full"
+            style={{
+              width: 12,
+              height: 12,
+              background:
+                "conic-gradient(red, yellow, lime, aqua, blue, magenta, red)",
+              border: "0.5px solid rgba(0,0,0,0.12)",
+            }}
+          />
+        </button>
+        <input
+          ref={colorInputRef}
+          type="color"
+          className="sr-only"
+          value={canvasBg ?? "#ffffff"}
+          onChange={(e) => setCanvasBg(e.target.value)}
+        />
       </div>
     </div>
   );
