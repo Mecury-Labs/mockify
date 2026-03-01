@@ -1,62 +1,41 @@
-import Image from "next/image";
+import IPhoneMockup from "./components/iphone-mockup";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white sm:items-start">
-        <Image
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black">
-            To get started, edit the page.tsx file.
+    <div className="flex min-h-screen items-center justify-center bg-zinc-100 font-sans">
+      <main className="flex flex-col items-center gap-10 py-20 px-8">
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+            Mockify
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mt-2 text-sm text-zinc-500">
+            iPhone 16 device mockup
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+
+        <IPhoneMockup scale={1.2}>
+          {/* Example screen content */}
+          <div className="flex h-full w-full flex-col items-center justify-center gap-3 px-6">
+            <div className="h-10 w-10 rounded-xl bg-zinc-900 flex items-center justify-center">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M5 12h14" />
+                <path d="M12 5v14" />
+              </svg>
+            </div>
+            <p className="text-xs font-medium text-zinc-400">
+              Drop your content here
+            </p>
+          </div>
+        </IPhoneMockup>
       </main>
     </div>
   );
