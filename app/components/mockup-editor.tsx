@@ -349,362 +349,351 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
         onChange={handleFileSelect}
       />
 
-      {/* Fixed sidebar panel on the right */}
+      {/* Fixed bottom-center floating toolbar */}
       <div
-        className="fixed top-6 right-6 z-40 rounded-2xl flex flex-col"
+        className="fixed bottom-6 left-1/2 z-40 rounded-2xl flex items-center"
         style={{
-          width: 260,
+          transform: "translateX(-50%)",
           backgroundColor: "#ffffff",
           border: "1px solid #e5e5e5",
           boxShadow:
             "0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04)",
+          padding: "8px 12px",
+          gap: 8,
         }}
       >
         {/* Device selector */}
-        <div className="px-4 py-3" ref={dropdownRef}>
-          <span
-            className="block text-[10px] font-medium uppercase tracking-wider mb-2"
-            style={{ color: "#a1a1aa" }}
+        <div ref={dropdownRef} className="relative">
+          <button
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="flex items-center gap-1.5 cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium"
+            style={{
+              backgroundColor: "#f5f5f7",
+              color: "#1d1d1f",
+              transition: "background-color 150ms ease",
+              whiteSpace: "nowrap",
+            }}
           >
-            Device
-          </span>
-          <div className="relative">
-            <button
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="w-full flex items-center justify-between cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium"
-              style={{
-                backgroundColor: "#f5f5f7",
-                color: "#1d1d1f",
-                transition: "background-color 150ms ease",
-              }}
-            >
-              {current.name}
-              <ChevronIcon open={dropdownOpen} />
-            </button>
+            {current.name}
+            <ChevronIcon open={dropdownOpen} />
+          </button>
 
-            <AnimatePresence>
-              {dropdownOpen && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: -4 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: -4 }}
-                  transition={{
-                    type: "spring",
-                    duration: 0.2,
-                    bounce: 0,
-                  }}
-                  className="absolute top-full left-0 mt-1 w-full rounded-xl overflow-hidden"
-                  style={{
-                    backgroundColor: "#ffffff",
-                    border: "1px solid #e5e5e5",
-                    boxShadow:
-                      "0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)",
-                    maxHeight: 280,
-                    overflowY: "auto",
-                    zIndex: 50,
-                    transformOrigin: "top left",
-                  }}
-                >
-                  {devices.map((d, i) => {
-                    const isActive = i === deviceIndex;
-                    return (
-                      <button
-                        key={d.name}
-                        onClick={() => {
-                          setDeviceIndex(i);
-                          setDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-3 py-2 text-xs cursor-pointer"
-                        style={{
-                          backgroundColor: isActive
-                            ? "#f5f5f7"
-                            : "transparent",
-                          color: isActive ? "#1d1d1f" : "#6e6e73",
-                          fontWeight: isActive ? 600 : 400,
-                          transition: "background-color 150ms ease",
-                        }}
-                        onMouseEnter={(e) => {
-                          if (!isActive)
-                            e.currentTarget.style.backgroundColor = "#fafafa";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = isActive
-                            ? "#f5f5f7"
-                            : "transparent";
-                        }}
-                      >
-                        {d.name}
-                      </button>
-                    );
-                  })}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+          <AnimatePresence>
+            {dropdownOpen && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 4 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 4 }}
+                transition={{
+                  type: "spring",
+                  duration: 0.2,
+                  bounce: 0,
+                }}
+                className="absolute bottom-full left-0 mb-2 rounded-xl overflow-hidden"
+                style={{
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e5e5e5",
+                  boxShadow:
+                    "0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)",
+                  maxHeight: 280,
+                  overflowY: "auto",
+                  zIndex: 50,
+                  transformOrigin: "bottom left",
+                  minWidth: 180,
+                }}
+              >
+                {devices.map((d, i) => {
+                  const isActive = i === deviceIndex;
+                  return (
+                    <button
+                      key={d.name}
+                      onClick={() => {
+                        setDeviceIndex(i);
+                        setDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-3 py-2 text-xs cursor-pointer"
+                      style={{
+                        backgroundColor: isActive
+                          ? "#f5f5f7"
+                          : "transparent",
+                        color: isActive ? "#1d1d1f" : "#6e6e73",
+                        fontWeight: isActive ? 600 : 400,
+                        transition: "background-color 150ms ease",
+                        whiteSpace: "nowrap",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isActive)
+                          e.currentTarget.style.backgroundColor = "#fafafa";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = isActive
+                          ? "#f5f5f7"
+                          : "transparent";
+                      }}
+                    >
+                      {d.name}
+                    </button>
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
+
+        {/* Divider */}
+        <div style={{ width: 1, height: 20, backgroundColor: "#e5e5e5" }} />
 
         {/* Device color */}
         {hasColors && (
           <>
-            <div
-              className="w-full"
-              style={{ height: 1, backgroundColor: "#f0f0f0" }}
-            />
-            <div className="px-4 py-3">
-              <span
-                className="block text-[10px] font-medium uppercase tracking-wider mb-2"
-                style={{ color: "#a1a1aa" }}
-              >
-                Color
-              </span>
-              <div className="flex items-center gap-1.5 flex-wrap">
-                {config.colors.map((variant) => {
-                  const isActive = selectedColor === variant.name;
-                  return (
-                    <button
-                      key={variant.name}
-                      title={variant.name}
-                      onClick={() => setSelectedColor(variant.name)}
-                      className="relative flex items-center justify-center cursor-pointer touch-hitbox"
-                      style={{ width: 20, height: 20 }}
-                    >
-                      {isActive && (
-                        <span
-                          className="absolute inset-0 rounded-full"
-                          style={{ border: "1.5px solid #999" }}
-                        />
-                      )}
+            <div className="flex items-center gap-1">
+              {config.colors.map((variant) => {
+                const isActive = selectedColor === variant.name;
+                return (
+                  <button
+                    key={variant.name}
+                    title={variant.name}
+                    onClick={() => setSelectedColor(variant.name)}
+                    className="relative flex items-center justify-center cursor-pointer touch-hitbox"
+                    style={{ width: 20, height: 20 }}
+                  >
+                    {isActive && (
                       <span
-                        className="rounded-full"
-                        style={{
-                          width: 14,
-                          height: 14,
-                          backgroundColor: variant.swatch,
-                          border: "0.5px solid rgba(0,0,0,0.12)",
-                        }}
+                        className="absolute inset-0 rounded-full"
+                        style={{ border: "1.5px solid #999" }}
                       />
-                    </button>
-                  );
-                })}
-              </div>
+                    )}
+                    <span
+                      className="rounded-full"
+                      style={{
+                        width: 14,
+                        height: 14,
+                        backgroundColor: variant.swatch,
+                        border: "0.5px solid rgba(0,0,0,0.12)",
+                      }}
+                    />
+                  </button>
+                );
+              })}
             </div>
+
+            {/* Divider */}
+            <div style={{ width: 1, height: 20, backgroundColor: "#e5e5e5" }} />
           </>
         )}
 
         {/* Canvas background */}
-        <div
-          className="w-full"
-          style={{ height: 1, backgroundColor: "#f0f0f0" }}
-        />
-        <div className="px-4 py-3">
-          <span
-            className="block text-[10px] font-medium uppercase tracking-wider mb-2"
-            style={{ color: "#a1a1aa" }}
-          >
-            Background
-          </span>
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {CANVAS_BG_PRESETS.map((preset) => {
-              const isActive = canvasBg === preset.value;
-              const isTransparent = preset.value === null;
-              return (
-                <button
-                  key={preset.label}
-                  title={preset.label}
-                  onClick={() => setCanvasBg(preset.value)}
-                  className="relative flex items-center justify-center cursor-pointer touch-hitbox"
-                  style={{ width: 20, height: 20 }}
-                >
-                  {isActive && (
-                    <span
-                      className="absolute inset-0 rounded-full"
-                      style={{ border: "1.5px solid #999" }}
-                    />
-                  )}
-                  <span
-                    className="rounded-full"
-                    style={{
-                      width: 14,
-                      height: 14,
-                      backgroundColor: isTransparent
-                        ? undefined
-                        : preset.swatch,
-                      border: "0.5px solid rgba(0,0,0,0.12)",
-                      ...(isTransparent
-                        ? {
-                            backgroundImage: [
-                              "linear-gradient(45deg, #ccc 25%, transparent 25%)",
-                              "linear-gradient(-45deg, #ccc 25%, transparent 25%)",
-                              "linear-gradient(45deg, transparent 75%, #ccc 75%)",
-                              "linear-gradient(-45deg, transparent 75%, #ccc 75%)",
-                            ].join(", "),
-                            backgroundSize: "6px 6px",
-                            backgroundPosition:
-                              "0px 0px, 0px 3px, 3px -3px, -3px 0px",
-                          }
-                        : {}),
-                    }}
-                  />
-                </button>
-              );
-            })}
-
-            {/* Custom bg color */}
-            <button
-              title="Custom color"
-              onClick={() => bgInputRef.current?.click()}
-              className="relative flex items-center justify-center cursor-pointer touch-hitbox"
-              style={{ width: 20, height: 20 }}
-            >
-              {canvasBg !== null &&
-                !CANVAS_BG_PRESETS.some((p) => p.value === canvasBg) && (
+        <div className="flex items-center gap-1">
+          {CANVAS_BG_PRESETS.map((preset) => {
+            const isActive = canvasBg === preset.value;
+            const isTransparent = preset.value === null;
+            return (
+              <button
+                key={preset.label}
+                title={preset.label}
+                onClick={() => setCanvasBg(preset.value)}
+                className="relative flex items-center justify-center cursor-pointer touch-hitbox"
+                style={{ width: 20, height: 20 }}
+              >
+                {isActive && (
                   <span
                     className="absolute inset-0 rounded-full"
                     style={{ border: "1.5px solid #999" }}
                   />
                 )}
-              <span
-                className="rounded-full"
-                style={{
-                  width: 14,
-                  height: 14,
-                  background:
-                    "conic-gradient(red, yellow, lime, aqua, blue, magenta, red)",
-                  border: "0.5px solid rgba(0,0,0,0.12)",
-                }}
-              />
-            </button>
-            <input
-              ref={bgInputRef}
-              type="color"
-              className="sr-only"
-              value={canvasBg ?? "#ffffff"}
-              onChange={(e) => setCanvasBg(e.target.value)}
+                <span
+                  className="rounded-full"
+                  style={{
+                    width: 14,
+                    height: 14,
+                    backgroundColor: isTransparent
+                      ? undefined
+                      : preset.swatch,
+                    border: "0.5px solid rgba(0,0,0,0.12)",
+                    ...(isTransparent
+                      ? {
+                          backgroundImage: [
+                            "linear-gradient(45deg, #ccc 25%, transparent 25%)",
+                            "linear-gradient(-45deg, #ccc 25%, transparent 25%)",
+                            "linear-gradient(45deg, transparent 75%, #ccc 75%)",
+                            "linear-gradient(-45deg, transparent 75%, #ccc 75%)",
+                          ].join(", "),
+                          backgroundSize: "6px 6px",
+                          backgroundPosition:
+                            "0px 0px, 0px 3px, 3px -3px, -3px 0px",
+                        }
+                      : {}),
+                  }}
+                />
+              </button>
+            );
+          })}
+
+          {/* Custom bg color */}
+          <button
+            title="Custom color"
+            onClick={() => bgInputRef.current?.click()}
+            className="relative flex items-center justify-center cursor-pointer touch-hitbox"
+            style={{ width: 20, height: 20 }}
+          >
+            {canvasBg !== null &&
+              !CANVAS_BG_PRESETS.some((p) => p.value === canvasBg) && (
+                <span
+                  className="absolute inset-0 rounded-full"
+                  style={{ border: "1.5px solid #999" }}
+                />
+              )}
+            <span
+              className="rounded-full"
+              style={{
+                width: 14,
+                height: 14,
+                background:
+                  "conic-gradient(red, yellow, lime, aqua, blue, magenta, red)",
+                border: "0.5px solid rgba(0,0,0,0.12)",
+              }}
             />
-          </div>
+          </button>
+          <input
+            ref={bgInputRef}
+            type="color"
+            className="sr-only"
+            value={canvasBg ?? "#ffffff"}
+            onChange={(e) => setCanvasBg(e.target.value)}
+          />
         </div>
+
+        {/* Divider */}
+        <div style={{ width: 1, height: 20, backgroundColor: "#e5e5e5" }} />
 
         {/* Position */}
-        <div
-          className="w-full"
-          style={{ height: 1, backgroundColor: "#f0f0f0" }}
-        />
-        <div className="px-4 py-3">
-          <span
-            className="block text-[10px] font-medium uppercase tracking-wider mb-2"
-            style={{ color: "#a1a1aa" }}
-          >
-            Position
-          </span>
-          <div className="grid grid-cols-3 gap-1">
-            {(
-              [
-                { value: "top", label: "Top", icon: "\u2191" },
-                { value: "center", label: "Center", icon: "\u00B7" },
-                { value: "bottom", label: "Bottom", icon: "\u2193" },
-              ] as const
-            ).map(({ value, label, icon }) => {
-              const isActive = position === value;
-              return (
-                <button
-                  key={value}
-                  onClick={() => setPosition(value)}
-                  className="cursor-pointer text-[11px] font-medium py-1 rounded-md"
-                  style={{
-                    transition:
-                      "background-color 150ms ease, color 150ms ease, border-color 150ms ease",
-                    backgroundColor: isActive ? "#f0f0f0" : "#f5f5f7",
-                    color: isActive ? "#1d1d1f" : "#6e6e73",
-                    border: isActive ? "1px solid #d0d0d0" : "1px solid #e5e5e5",
-                    fontWeight: isActive ? 600 : 400,
-                  }}
-                >
-                  {icon} {label}
-                </button>
-              );
-            })}
-          </div>
+        <div className="flex items-center gap-1">
+          {(
+            [
+              { value: "top", label: "Top", icon: "\u2191" },
+              { value: "center", label: "Center", icon: "\u00B7" },
+              { value: "bottom", label: "Bottom", icon: "\u2193" },
+            ] as const
+          ).map(({ value, icon }) => {
+            const isActive = position === value;
+            return (
+              <button
+                key={value}
+                title={value.charAt(0).toUpperCase() + value.slice(1)}
+                onClick={() => setPosition(value)}
+                className="cursor-pointer text-[11px] font-medium rounded-md"
+                style={{
+                  transition:
+                    "background-color 150ms ease, color 150ms ease",
+                  backgroundColor: isActive ? "#f0f0f0" : "transparent",
+                  color: isActive ? "#1d1d1f" : "#6e6e73",
+                  fontWeight: isActive ? 600 : 400,
+                  width: 28,
+                  height: 28,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {icon}
+              </button>
+            );
+          })}
         </div>
+
+        {/* Divider */}
+        <div style={{ width: 1, height: 20, backgroundColor: "#e5e5e5" }} />
 
         {/* Zoom */}
-        <div
-          className="w-full"
-          style={{ height: 1, backgroundColor: "#f0f0f0" }}
-        />
-        <div className="px-4 py-3">
-          <span
-            className="block text-[10px] font-medium uppercase tracking-wider mb-2"
-            style={{ color: "#a1a1aa" }}
-          >
-            Zoom
-          </span>
-          <div className="grid grid-cols-4 gap-1">
-            {([0.5, 0.75, 0.9, 1, 1.25, 1.5, 1.75, 2] as const).map(
-              (level) => {
-                const isActive = zoom === level;
-                return (
-                  <button
-                    key={level}
-                    onClick={() => setZoom(level)}
-                    className="cursor-pointer text-[11px] font-medium py-1 rounded-md"
-                    style={{
-                      transition:
-                        "background-color 150ms ease, color 150ms ease, border-color 150ms ease",
-                      backgroundColor: isActive ? "#f0f0f0" : "#f5f5f7",
-                      color: isActive ? "#1d1d1f" : "#6e6e73",
-                      border: isActive
-                        ? "1px solid #d0d0d0"
-                        : "1px solid #e5e5e5",
-                      fontWeight: isActive ? 600 : 400,
-                    }}
-                  >
-                    {level === 1 ? "1x" : `${level}x`}
-                  </button>
-                );
-              }
-            )}
-          </div>
-        </div>
-
-        {/* View Code */}
-        <div
-          className="w-full"
-          style={{ height: 1, backgroundColor: "#f0f0f0" }}
-        />
-        <div className="px-4 py-3">
+        <div className="flex items-center gap-1">
           <button
-            onClick={() => setCodeModalOpen(true)}
-            className="w-full flex items-center justify-center gap-2 cursor-pointer rounded-lg px-3 py-2 text-xs font-medium"
+            title="Zoom out"
+            onClick={() => {
+              const levels = [0.5, 0.75, 0.9, 1, 1.25, 1.5, 1.75, 2];
+              const idx = levels.indexOf(zoom);
+              if (idx > 0) setZoom(levels[idx - 1]);
+            }}
+            className="cursor-pointer text-[11px] font-medium rounded-md"
             style={{
-              backgroundColor: "#f0f0f0",
-              color: "#1d1d1f",
-              border: "1px solid #d0d0d0",
-              transition: "background-color 150ms ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#e8e8e8";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "#f0f0f0";
+              width: 28,
+              height: 28,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: zoom <= 0.5 ? "#d0d0d0" : "#6e6e73",
+              transition: "color 150ms ease",
             }}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="16 18 22 12 16 6" />
-              <polyline points="8 6 2 12 8 18" />
-            </svg>
-            View Code
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /></svg>
+          </button>
+          <span
+            className="text-[11px] font-medium tabular-nums"
+            style={{
+              color: "#1d1d1f",
+              minWidth: 32,
+              textAlign: "center",
+            }}
+          >
+            {zoom === 1 ? "1x" : `${zoom}x`}
+          </span>
+          <button
+            title="Zoom in"
+            onClick={() => {
+              const levels = [0.5, 0.75, 0.9, 1, 1.25, 1.5, 1.75, 2];
+              const idx = levels.indexOf(zoom);
+              if (idx < levels.length - 1) setZoom(levels[idx + 1]);
+            }}
+            className="cursor-pointer text-[11px] font-medium rounded-md"
+            style={{
+              width: 28,
+              height: 28,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: zoom >= 2 ? "#d0d0d0" : "#6e6e73",
+              transition: "color 150ms ease",
+            }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
           </button>
         </div>
+
+        {/* Divider */}
+        <div style={{ width: 1, height: 20, backgroundColor: "#e5e5e5" }} />
+
+        {/* View Code */}
+        <button
+          onClick={() => setCodeModalOpen(true)}
+          title="View Code"
+          className="flex items-center justify-center cursor-pointer rounded-md"
+          style={{
+            width: 28,
+            height: 28,
+            color: "#6e6e73",
+            transition: "color 150ms ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = "#1d1d1f";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = "#6e6e73";
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="16 18 22 12 16 6" />
+            <polyline points="8 6 2 12 8 18" />
+          </svg>
+        </button>
       </div>
 
       {/* Code modal */}
