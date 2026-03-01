@@ -37,7 +37,7 @@ const MockupCanvas = forwardRef<HTMLDivElement, MockupCanvasProps>(
     return (
       <div
         ref={ref}
-        className={`relative aspect-square w-full rounded-3xl shadow-lg overflow-hidden ${className}`}
+        className={`relative aspect-square w-full rounded-2xl shadow-lg overflow-hidden ${className}`}
       >
         {/* Background layer: solid color when set, checkered pattern when transparent */}
         <div
