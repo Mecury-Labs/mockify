@@ -152,7 +152,7 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
   return (
     <>
       {/* Centered canvas */}
-      <div className="mx-auto w-full max-w-lg">
+      <div className="mx-auto w-full max-w-xl">
         <MockupCanvas
           ref={canvasRef}
           position={position}
