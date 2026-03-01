@@ -130,6 +130,28 @@ export default function Navbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-2">
+          {/* Playground link */}
+          <a
+            href="/playground"
+            className="hidden sm:flex items-center rounded-full cursor-pointer"
+            style={{
+              padding: "7px 14px",
+              color: "#6e6e73",
+              fontSize: "12px",
+              fontWeight: 500,
+              textDecoration: "none",
+              transition: "color 150ms ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = "#1d1d1f";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "#6e6e73";
+            }}
+          >
+            Playground
+          </a>
+
           {/* GitHub button */}
           <a
             href="https://github.com/Mecury-Labs/mockify"
@@ -162,7 +184,7 @@ export default function Navbar() {
 
           {/* Try Pro button */}
           <a
-            href="#"
+            href="/#pro"
             className="flex items-center gap-1.5 rounded-full cursor-pointer"
             style={{
               padding: "7px 16px",

@@ -44,7 +44,7 @@ const ALL_DEVICES: DeviceEntry[] = [
   { name: "iPhone 13 Pro Max", config: IPHONE_13_PRO_MAX },
 ];
 
-export default function Examples() {
+export default function Playground() {
   return (
     <div
       className="min-h-screen font-sans"
