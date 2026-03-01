@@ -50,12 +50,9 @@ export default function Examples() {
       className="min-h-screen font-sans"
       style={{ backgroundColor: "#f5f5f7" }}
     >
-      <main className="mx-auto max-w-5xl px-6 py-16">
+      <main className="mx-auto max-w-5xl px-6 pt-24 pb-16">
         <div className="text-center mb-12">
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
-            Mockify
-          </h1>
-          <p className="mt-2 text-sm text-zinc-500">
+          <p className="text-sm text-zinc-500">
             iPhone device mockups — all models
           </p>
           <ShellCommand command="npx mockify add iphone16-pro" />
