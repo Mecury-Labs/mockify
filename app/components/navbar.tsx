@@ -130,17 +130,18 @@ export default function Navbar() {
           href="https://github.com/Mecury-Labs/mockify"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium cursor-pointer"
+          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium cursor-pointer"
           style={{
             color: "#1d1d1f",
-            backgroundColor: "transparent",
+            backgroundColor: "#f0f0f0",
+            border: "1px solid #e0e0e0",
             transition: "background-color 150ms ease",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "rgba(0, 0, 0, 0.04)";
+            e.currentTarget.style.backgroundColor = "#e8e8e8";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.backgroundColor = "#f0f0f0";
           }}
         >
           <GitHubIcon />
