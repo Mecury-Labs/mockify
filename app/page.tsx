@@ -14,43 +14,24 @@ export default function Home() {
         </div>
 
         <IPhoneMockup width={340}>
-          {/* Example screen content -- a minimal iOS-style home screen */}
-          <div className="flex h-full w-full flex-col bg-[#f2f2f7]">
-            {/* Spacer for status bar area */}
-            <div className="h-[15%]" />
-
-            {/* Content */}
-            <div className="flex flex-1 flex-col items-center justify-center gap-4 px-8">
-              <div className="grid grid-cols-4 gap-3 w-full max-w-[240px]">
-                {[
-                  { color: "#007AFF", label: "Mail" },
-                  { color: "#34C759", label: "Phone" },
-                  { color: "#FF9500", label: "Notes" },
-                  { color: "#AF52DE", label: "Photos" },
-                  { color: "#FF2D55", label: "Music" },
-                  { color: "#5AC8FA", label: "Maps" },
-                  { color: "#FF3B30", label: "Clock" },
-                  { color: "#30D158", label: "Health" },
-                ].map((app) => (
-                  <div
-                    key={app.label}
-                    className="flex flex-col items-center gap-1"
-                  >
-                    <div
-                      className="rounded-[22%] aspect-square w-full"
-                      style={{
-                        background: app.color,
-                        boxShadow: `0 1px 3px ${app.color}33`,
-                      }}
-                    />
-                    <span className="text-[7px] text-zinc-600 leading-none">
-                      {app.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          <button className="absolute inset-0 w-full h-full bg-[#f2f2f2] hover:opacity-70 transition-opacity flex items-center justify-center cursor-pointer">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-[#adadad]"
+              style={{ width: 32, height: 32 }}
+            >
+              <path d="M5 12h14" />
+              <path d="M12 5v14" />
+            </svg>
+          </button>
         </IPhoneMockup>
       </main>
     </div>
