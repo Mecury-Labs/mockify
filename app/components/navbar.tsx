@@ -159,6 +159,30 @@ export default function Navbar() {
             <span className="hidden sm:inline">Star</span>
             <StarIcon />
           </a>
+
+          {/* Try Pro button */}
+          <a
+            href="#"
+            className="flex items-center gap-1.5 rounded-full cursor-pointer"
+            style={{
+              padding: "7px 16px",
+              color: "#ffffff",
+              backgroundColor: "#1d1d1f",
+              transition: "opacity 150ms ease",
+              fontSize: "12px",
+              fontWeight: 600,
+              textDecoration: "none",
+              letterSpacing: "-0.01em",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = "0.85";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = "1";
+            }}
+          >
+            Try Pro
+          </a>
         </div>
       </div>
     </nav>
