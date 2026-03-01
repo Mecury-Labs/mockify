@@ -2,9 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import DeviceMockup, { type DeviceConfig } from "./device-mockup";
-import MockupCanvas from "./mockup-canvas";
+import MockupCanvas, { type CanvasPosition } from "./mockup-canvas";
 
 const ZOOM_LEVELS = [0.5, 0.75, 0.9, 1, 1.25, 1.5, 1.75, 2] as const;
+
+const POSITIONS: { value: CanvasPosition; label: string; icon: string }[] = [
+  { value: "top", label: "Top", icon: "\u2191" },
+  { value: "center", label: "Center", icon: "\u00B7" },
+  { value: "bottom", label: "Bottom", icon: "\u2193" },
+];
 
 /** At 1x zoom the device width is 47% of the canvas width */
 const BASE_DEVICE_RATIO = 0.47;
@@ -48,6 +54,7 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
     config.defaultColor
   );
   const [zoom, setZoom] = useState(1);
+  const [position, setPosition] = useState<CanvasPosition>("center");
   const [canvasWidth, setCanvasWidth] = useState(0);
   const canvasRef = useRef<HTMLDivElement>(null);
 
@@ -75,7 +82,7 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
   return (
     <div className="flex flex-col items-center gap-3">
       {/* Canvas with device inside */}
-      <MockupCanvas ref={canvasRef}>
+      <MockupCanvas ref={canvasRef} position={position}>
         {canvasWidth > 0 && (
           <div
             style={{ transition: "transform 0.3s ease-out" }}
@@ -148,6 +155,27 @@ export default function DeviceCard({ name, config }: DeviceCardProps) {
               }}
             >
               {formatZoom(level)}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Position controls */}
+      <div className="grid grid-cols-3 gap-1 w-full max-w-[200px]">
+        {POSITIONS.map(({ value, label, icon }) => {
+          const isActive = position === value;
+          return (
+            <button
+              key={value}
+              onClick={() => setPosition(value)}
+              className="cursor-pointer text-[11px] font-medium py-1 rounded-md transition-colors"
+              style={{
+                backgroundColor: isActive ? "#1d1d1f" : "#ffffff",
+                color: isActive ? "#ffffff" : "#6e6e73",
+                border: isActive ? "none" : "1px solid #d2d2d7",
+              }}
+            >
+              {icon} {label}
             </button>
           );
         })}

@@ -12,14 +12,24 @@ import { forwardRef } from "react";
  *   - Children (the device) centered inside
  */
 
+export type CanvasPosition = "top" | "center" | "bottom";
+
+const POSITION_ALIGN: Record<CanvasPosition, string> = {
+  top: "items-start",
+  center: "items-center",
+  bottom: "items-end",
+};
+
 interface MockupCanvasProps {
   children: React.ReactNode;
+  /** Vertical position of the device within the canvas. Default: "center" */
+  position?: CanvasPosition;
   /** Additional className for the outer wrapper */
   className?: string;
 }
 
 const MockupCanvas = forwardRef<HTMLDivElement, MockupCanvasProps>(
-  function MockupCanvas({ children, className = "" }, ref) {
+  function MockupCanvas({ children, position = "center", className = "" }, ref) {
     return (
       <div
         ref={ref}
@@ -40,8 +50,11 @@ const MockupCanvas = forwardRef<HTMLDivElement, MockupCanvasProps>(
           }}
         />
 
-        {/* Device layer — children are centered */}
-        <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+        {/* Device layer — position controlled by prop */}
+        <div
+          className={`absolute inset-0 overflow-hidden flex justify-center ${POSITION_ALIGN[position]}`}
+          style={{ transition: "align-items 0.3s ease-out" }}
+        >
           {children}
         </div>
       </div>
