@@ -8,8 +8,8 @@ import { useEffect, useState } from "react";
  */
 const MockifyLogo = () => (
   <svg
-    width="26"
-    height="26"
+    width="30"
+    height="30"
     viewBox="0 0 32 32"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -86,8 +86,8 @@ export default function Navbar() {
       <div
         className="flex items-center justify-between rounded-full"
         style={{
-          minWidth: 440,
-          padding: "10px 10px 10px 20px",
+          minWidth: 560,
+          padding: "12px 12px 12px 24px",
           backgroundColor: scrolled
             ? "rgba(255, 255, 255, 0.82)"
             : "rgba(255, 255, 255, 0.65)",
@@ -111,13 +111,13 @@ export default function Navbar() {
         >
           <MockifyLogo />
           <span
-            className="text-[13px] font-semibold tracking-tight"
+            className="text-[15px] font-semibold tracking-tight"
             style={{ color: "#1d1d1f", letterSpacing: "-0.01em" }}
           >
             Mockify
           </span>
           <span
-            className="text-[10px] font-medium rounded-full px-1.5 py-0.5"
+            className="text-[11px] font-medium rounded-full px-2 py-0.5"
             style={{
               color: "#6e6e73",
               backgroundColor: "rgba(0, 0, 0, 0.04)",
@@ -129,15 +129,15 @@ export default function Navbar() {
         </a>
 
         {/* Right side */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           {/* Playground link */}
           <a
             href="/playground"
             className="hidden sm:flex items-center rounded-full cursor-pointer"
             style={{
-              padding: "7px 14px",
+              padding: "9px 16px",
               color: "#6e6e73",
-              fontSize: "12px",
+              fontSize: "13px",
               fontWeight: 500,
               textDecoration: "none",
               transition: "color 150ms ease",
@@ -159,12 +159,12 @@ export default function Navbar() {
             rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-full cursor-pointer"
             style={{
-              padding: "7px 14px 7px 12px",
+              padding: "9px 16px 9px 14px",
               color: "#1d1d1f",
               backgroundColor: "#f0f0f0",
               border: "1px solid #e0e0e0",
               transition: "all 150ms ease",
-              fontSize: "12px",
+              fontSize: "13px",
               fontWeight: 500,
               textDecoration: "none",
             }}
@@ -187,11 +187,11 @@ export default function Navbar() {
             href="/#pro"
             className="flex items-center gap-1.5 rounded-full cursor-pointer"
             style={{
-              padding: "7px 16px",
+              padding: "9px 20px",
               color: "#ffffff",
               backgroundColor: "#1d1d1f",
               transition: "opacity 150ms ease",
-              fontSize: "12px",
+              fontSize: "13px",
               fontWeight: 600,
               textDecoration: "none",
               letterSpacing: "-0.01em",
