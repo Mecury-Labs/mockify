@@ -59,8 +59,8 @@ export interface DeviceMockupProps {
   /**
    * Base path for device frame and status bar assets.
    * Defaults to the unpkg CDN so it works out of the box — no setup needed.
-   * Set to "/mockify" if you self-host with `npx @mockify/react init`.
-   * @default "https://unpkg.com/@mockify/react@latest/assets"
+   * Set to "/mockify" if you self-host with `npx @mockifydev/react init`.
+   * @default "https://unpkg.com/@mockifydev/react@latest/assets"
    */
   basePath?: string;
 }

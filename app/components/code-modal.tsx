@@ -53,7 +53,7 @@ const TABS: TabDef[] = [
     label: "Install",
     step: "1",
     lang: "bash",
-    getCode: () => `npm install @mockify/react`,
+    getCode: () => `npm install @mockifydev/react`,
   },
   {
     id: "usage",
@@ -62,7 +62,7 @@ const TABS: TabDef[] = [
     lang: "tsx",
     getCode: (deviceName: string, color?: string) => {
       const configName = toCamelConfig(deviceName);
-      return `import { DeviceMockup, ${configName} } from "@mockify/react";
+      return `import { DeviceMockup, ${configName} } from "@mockifydev/react";
 
 export default function MyComponent() {
   return (

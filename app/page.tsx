@@ -56,7 +56,7 @@ export default function Home() {
             <p className="text-sm text-zinc-500">
               iPhone device mockups — all models
             </p>
-            <ShellCommand command="npm install @mockify/react" />
+            <ShellCommand command="npm install @mockifydev/react" />
           </div>
 
           <MockupEditor devices={ALL_DEVICES} />

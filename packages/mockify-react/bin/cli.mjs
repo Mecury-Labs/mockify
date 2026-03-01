@@ -33,10 +33,10 @@ function error(msg) {
 
 function printHelp() {
   log("");
-  log(`${BOLD}  @mockify/react${RESET} ${DIM}— iPhone device mockups for React${RESET}`);
+  log(`${BOLD}  @mockifydev/react${RESET} ${DIM}— iPhone device mockups for React${RESET}`);
   log("");
   log(`  ${BOLD}Usage:${RESET}`);
-  log(`    npx @mockify/react init ${DIM}[--dest <path>]${RESET}`);
+  log(`    npx @mockifydev/react init ${DIM}[--dest <path>]${RESET}`);
   log("");
   log(`  ${BOLD}Commands:${RESET}`);
   log(`    init    Copy device frame PNGs to your public directory (optional)`);
@@ -47,8 +47,8 @@ function printHelp() {
   log(`    --help  Show this help message`);
   log("");
   log(`  ${BOLD}Example:${RESET}`);
-  log(`    ${DIM}$${RESET} npx @mockify/react init`);
-  log(`    ${DIM}$${RESET} npx @mockify/react init --dest public/assets/mockify`);
+  log(`    ${DIM}$${RESET} npx @mockifydev/react init`);
+  log(`    ${DIM}$${RESET} npx @mockifydev/react init --dest public/assets/mockify`);
   log("");
 }
 
@@ -66,12 +66,12 @@ function countFiles(dir) {
 
 function init(dest) {
   log("");
-  log(`${BOLD}  @mockify/react${RESET} ${DIM}init${RESET}`);
+  log(`${BOLD}  @mockifydev/react${RESET} ${DIM}init${RESET}`);
   log("");
 
   // Check assets exist
   if (!existsSync(ASSETS_DIR)) {
-    error("Assets directory not found in package. Try reinstalling @mockify/react.");
+    error("Assets directory not found in package. Try reinstalling @mockifydev/react.");
     process.exit(1);
   }
 
@@ -113,7 +113,7 @@ function init(dest) {
   log("");
   log(`  ${BOLD}Quick start:${RESET}`);
   log("");
-  log(`  ${DIM}import { DeviceMockup, iPhone16Pro } from "@mockify/react";${RESET}`);
+  log(`  ${DIM}import { DeviceMockup, iPhone16Pro } from "@mockifydev/react";${RESET}`);
   log("");
   log(`  ${DIM}<DeviceMockup device={iPhone16Pro} width={320}>${RESET}`);
   log(`  ${DIM}  <img src="/screenshot.png" ... />${RESET}`);

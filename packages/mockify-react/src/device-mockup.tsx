@@ -12,7 +12,7 @@ import type { DeviceMockupProps } from "./types";
  *
  * @example
  * ```tsx
- * import { DeviceMockup, iPhone16Pro } from "@mockify/react";
+ * import { DeviceMockup, iPhone16Pro } from "@mockifydev/react";
  *
  * <DeviceMockup device={iPhone16Pro} width={320}>
  *   <img src="/screenshot.png" alt="App" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -28,7 +28,7 @@ export function DeviceMockup({
   className = "",
   style,
   color,
-  basePath = "https://unpkg.com/@mockify/react@latest/assets",
+  basePath = "https://unpkg.com/@mockifydev/react@latest/assets",
 }: DeviceMockupProps) {
   // Resolve frame source: color prop → defaultColor → frameSrc fallback
   const resolvedColor = color ?? device.defaultColor;
