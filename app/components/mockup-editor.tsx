@@ -148,11 +148,11 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
   }, []);
 
   const shouldReduceMotion = useReducedMotion();
-  const deviceWidth = canvasWidth * BASE_DEVICE_RATIO * zoom;
+  const baseDeviceWidth = canvasWidth * BASE_DEVICE_RATIO;
   const hasColors = config.colors.length > 0;
 
-  // Unique key for AnimatePresence — changes on device or color swap
-  const deviceKey = `${current.name}-${selectedColor ?? "default"}`;
+  // Key only changes on device model swap (not color — color is just a frame PNG change)
+  const deviceKey = current.name;
 
   return (
     <>
@@ -164,37 +164,27 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
           backgroundColor={canvasBg}
         >
           {canvasWidth > 0 && (
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={deviceKey}
-                layout="position"
-                initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{
-                  type: "spring",
-                  duration: 0.35,
-                  bounce: 0.15,
-                  layout: {
-                    type: "spring",
-                    duration: 0.4,
-                    bounce: 0.15,
-                  },
-                }}
-                style={{ willChange: "transform, opacity", x: 0 }}
+                initial={shouldReduceMotion ? false : { opacity: 0, filter: "blur(4px)" }}
+                animate={{ opacity: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, filter: "blur(4px)" }}
+                transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+                style={{ willChange: "opacity, filter" }}
               >
                 <motion.div
-                  animate={{ width: deviceWidth }}
+                  animate={{ scale: zoom }}
                   transition={{
                     type: "spring",
                     duration: 0.5,
                     bounce: 0.1,
                   }}
-                  style={{ width: deviceWidth }}
+                  style={{ willChange: "transform" }}
                 >
                   <DeviceMockup
                     device={config}
-                    width={deviceWidth}
+                    width={canvasWidth * BASE_DEVICE_RATIO}
                     color={selectedColor}
                   >
                     <ScreenPlaceholder />
