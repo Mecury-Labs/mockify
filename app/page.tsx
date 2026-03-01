@@ -1,4 +1,4 @@
-import IPhone16Plus from "./components/devices/iphone-16-plus";
+import IPhone16 from "./components/devices/iphone-16";
 
 export default function Home() {
   return (
@@ -13,7 +13,7 @@ export default function Home() {
           </p>
         </div>
 
-        <IPhone16Plus width={340}>
+        <IPhone16 width={340}>
           <button className="absolute inset-0 w-full h-full bg-[#f2f2f2] hover:opacity-70 transition-opacity flex items-center justify-center cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -32,7 +32,7 @@ export default function Home() {
               <path d="M12 5v14" />
             </svg>
           </button>
-        </IPhone16Plus>
+        </IPhone16>
       </main>
     </div>
   );
