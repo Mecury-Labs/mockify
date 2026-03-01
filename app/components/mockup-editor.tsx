@@ -294,6 +294,7 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
                     device={config}
                     width={deviceWidth}
                     color={selectedColor}
+                    showStatusBar={!screenContent}
                   >
                     {screenContent ? (
                       <div
