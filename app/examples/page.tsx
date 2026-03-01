@@ -50,8 +50,8 @@ export default function Examples() {
       className="min-h-screen font-sans"
       style={{ backgroundColor: "#f5f5f7" }}
     >
-      <main className="mx-auto max-w-3xl px-6 py-16">
-        <div className="text-center mb-12">
+      <main className="px-6 py-16" style={{ maxWidth: "calc(100% - 420px)" }}>
+        <div className="mb-12">
           <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
             Mockify
           </h1>
@@ -60,9 +60,9 @@ export default function Examples() {
           </p>
           <ShellCommand command="npx mockify add iphone16-pro" />
         </div>
-
-        <MockupEditor devices={ALL_DEVICES} />
       </main>
+
+      <MockupEditor devices={ALL_DEVICES} />
     </div>
   );
 }

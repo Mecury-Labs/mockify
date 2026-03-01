@@ -144,7 +144,10 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
   const hasColors = config.colors.length > 0;
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto">
+    <div
+      className="fixed top-6 right-6 z-40 flex flex-col items-center gap-4"
+      style={{ width: 380 }}
+    >
       {/* Single canvas */}
       <MockupCanvas
         ref={canvasRef}
