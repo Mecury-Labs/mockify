@@ -28,7 +28,7 @@ export function DeviceMockup({
   className = "",
   style,
   color,
-  basePath = "/mockify",
+  basePath = "https://unpkg.com/@mockify/react@latest/assets",
 }: DeviceMockupProps) {
   // Resolve frame source: color prop → defaultColor → frameSrc fallback
   const resolvedColor = color ?? device.defaultColor;

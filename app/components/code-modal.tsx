@@ -56,16 +56,9 @@ const TABS: TabDef[] = [
     getCode: () => `npm install @mockify/react`,
   },
   {
-    id: "setup",
-    label: "Setup",
-    step: "2",
-    lang: "bash",
-    getCode: () => `npx mockify init`,
-  },
-  {
     id: "usage",
     label: "Usage",
-    step: "3",
+    step: "2",
     lang: "tsx",
     getCode: (deviceName: string, color?: string) => {
       const configName = toCamelConfig(deviceName);
@@ -373,8 +366,6 @@ export default function CodeModal({
                   >
                     {activeTab === "install" &&
                       "Install the package from npm"}
-                    {activeTab === "setup" &&
-                      "Copy device frames to your public directory"}
                     {activeTab === "usage" &&
                       "Import and use in any React component"}
                   </span>

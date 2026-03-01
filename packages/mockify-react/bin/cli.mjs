@@ -36,18 +36,19 @@ function printHelp() {
   log(`${BOLD}  @mockify/react${RESET} ${DIM}— iPhone device mockups for React${RESET}`);
   log("");
   log(`  ${BOLD}Usage:${RESET}`);
-  log(`    npx mockify init ${DIM}[--dest <path>]${RESET}`);
+  log(`    npx @mockify/react init ${DIM}[--dest <path>]${RESET}`);
   log("");
   log(`  ${BOLD}Commands:${RESET}`);
-  log(`    init    Copy device frame PNGs to your public directory`);
+  log(`    init    Copy device frame PNGs to your public directory (optional)`);
+  log(`            ${DIM}Assets are served from CDN by default — only needed for self-hosting${RESET}`);
   log("");
   log(`  ${BOLD}Options:${RESET}`);
   log(`    --dest  Destination path ${DIM}(default: public/mockify)${RESET}`);
   log(`    --help  Show this help message`);
   log("");
   log(`  ${BOLD}Example:${RESET}`);
-  log(`    ${DIM}$${RESET} npx mockify init`);
-  log(`    ${DIM}$${RESET} npx mockify init --dest public/assets/mockify`);
+  log(`    ${DIM}$${RESET} npx @mockify/react init`);
+  log(`    ${DIM}$${RESET} npx @mockify/react init --dest public/assets/mockify`);
   log("");
 }
 

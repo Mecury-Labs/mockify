@@ -58,8 +58,9 @@ export interface DeviceMockupProps {
   color?: string;
   /**
    * Base path for device frame and status bar assets.
-   * @default "/mockify"
-   * @example "/mockify" resolves to "/mockify/devices/iPhone 16 Pro - Natural Titanium.png"
+   * Defaults to the unpkg CDN so it works out of the box — no setup needed.
+   * Set to "/mockify" if you self-host with `npx @mockify/react init`.
+   * @default "https://unpkg.com/@mockify/react@latest/assets"
    */
   basePath?: string;
 }
