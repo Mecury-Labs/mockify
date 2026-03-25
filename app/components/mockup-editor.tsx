@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { track } from "@vercel/analytics";
 import { toast } from "sonner";
+import { toPng, toJpeg, toSvg } from "html-to-image";
 import DeviceMockup, { type DeviceConfig } from "./device-mockup";
 import MockupCanvas, { type CanvasPosition } from "./mockup-canvas";
 import CodeModal from "./code-modal";
@@ -161,6 +162,11 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
   // Code modal
   const [codeModalOpen, setCodeModalOpen] = useState(false);
 
+  // Export
+  const [exportOpen, setExportOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const exportRef = useRef<HTMLDivElement>(null);
+
   // Canvas sizing
   const [canvasWidth, setCanvasWidth] = useState(0);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -264,6 +270,61 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deviceIndex]);
+
+  // Close export dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (
+        exportRef.current &&
+        !exportRef.current.contains(e.target as Node)
+      ) {
+        setExportOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  // Export handler
+  const handleExport = useCallback(
+    async (format: "png" | "jpg" | "svg") => {
+      const node = canvasRef.current;
+      if (!node) return;
+
+      setExporting(true);
+      try {
+        let dataUrl: string;
+        const options = {
+          cacheBust: true,
+          pixelRatio: 2,
+        };
+
+        if (format === "png") {
+          dataUrl = await toPng(node, options);
+        } else if (format === "jpg") {
+          dataUrl = await toJpeg(node, { ...options, quality: 0.95 });
+        } else {
+          dataUrl = await toSvg(node, options);
+        }
+
+        const link = document.createElement("a");
+        link.download = `mockify-${current.name.toLowerCase().replace(/\s+/g, "-")}.${format === "jpg" ? "jpg" : format}`;
+        link.href = dataUrl;
+        link.click();
+
+        track("export_mockup", { format, device: current.name });
+        toast.success(`Exported as ${format.toUpperCase()}`);
+      } catch {
+        toast.error("Export failed", {
+          description: "Could not generate the image. Please try again.",
+        });
+      } finally {
+        setExporting(false);
+        setExportOpen(false);
+      }
+    },
+    [current.name]
+  );
 
   const shouldReduceMotion = useReducedMotion();
   const deviceWidth = canvasWidth * BASE_DEVICE_RATIO * zoom;
@@ -719,6 +780,111 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
             </svg>
             View Code
           </button>
+        </div>
+
+        {/* Export */}
+        <div
+          className="w-full"
+          style={{ height: 1, backgroundColor: "#f0f0f0" }}
+        />
+        <div className="px-4 py-3" ref={exportRef}>
+          <div className="relative">
+            <button
+              onClick={() => setExportOpen(!exportOpen)}
+              disabled={exporting}
+              className="w-full flex items-center justify-center gap-2 cursor-pointer rounded-lg px-3 py-2 text-xs font-medium"
+              style={{
+                backgroundColor: "#1d1d1f",
+                color: "#ffffff",
+                border: "1px solid #1d1d1f",
+                transition: "opacity 150ms ease",
+                opacity: exporting ? 0.6 : 1,
+              }}
+              onMouseEnter={(e) => {
+                if (!exporting) e.currentTarget.style.opacity = "0.85";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = exporting ? "0.6" : "1";
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              {exporting ? "Exporting..." : "Export"}
+            </button>
+
+            <AnimatePresence>
+              {exportOpen && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 4 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 4 }}
+                  transition={{
+                    type: "spring",
+                    duration: 0.2,
+                    bounce: 0,
+                  }}
+                  className="absolute bottom-full left-0 mb-1 w-full rounded-xl overflow-hidden"
+                  style={{
+                    backgroundColor: "#ffffff",
+                    border: "1px solid #e5e5e5",
+                    boxShadow:
+                      "0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)",
+                    zIndex: 50,
+                    transformOrigin: "bottom left",
+                  }}
+                >
+                  {(
+                    [
+                      { format: "png", label: "PNG", desc: "Lossless, transparent" },
+                      { format: "jpg", label: "JPG", desc: "Compressed, smaller" },
+                      { format: "svg", label: "SVG", desc: "Vector, scalable" },
+                    ] as const
+                  ).map(({ format, label, desc }) => (
+                    <button
+                      key={format}
+                      onClick={() => handleExport(format)}
+                      className="w-full text-left px-3 py-2.5 cursor-pointer"
+                      style={{
+                        transition: "background-color 150ms ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#fafafa";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                      }}
+                    >
+                      <span
+                        className="block text-xs font-medium"
+                        style={{ color: "#1d1d1f" }}
+                      >
+                        {label}
+                      </span>
+                      <span
+                        className="block text-[10px]"
+                        style={{ color: "#6e6e73" }}
+                      >
+                        {desc}
+                      </span>
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 
