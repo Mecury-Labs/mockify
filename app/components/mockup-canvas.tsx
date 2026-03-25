@@ -41,6 +41,7 @@ const MockupCanvas = forwardRef<HTMLDivElement, MockupCanvasProps>(
       >
         {/* Background layer: solid color when set, checkered pattern when transparent */}
         <div
+          data-canvas-bg
           className="absolute inset-0"
           style={
             hasBg

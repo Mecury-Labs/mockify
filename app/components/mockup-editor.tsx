@@ -293,13 +293,36 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
 
       setExporting(true);
       try {
-        const canvas = await html2canvas(node, {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          backgroundColor: canvasBg ?? null,
-          logging: false,
-        });
+        // When transparent bg is selected: PNG gets true transparency,
+        // JPG (no alpha) gets white fallback.
+        const isTransparent = canvasBg == null;
+        const bgColor = isTransparent
+          ? format === "png"
+            ? null          // null = transparent in html2canvas
+            : "#ffffff"     // JPG can't do transparency
+          : canvasBg;
+
+        // Hide the checkered pattern layer so it doesn't render into the export
+        const bgLayer = node.querySelector("[data-canvas-bg]") as HTMLElement | null;
+        if (bgLayer && isTransparent) {
+          bgLayer.style.visibility = "hidden";
+        }
+
+        let canvas: HTMLCanvasElement;
+        try {
+          canvas = await html2canvas(node, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: bgColor,
+            logging: false,
+          });
+        } finally {
+          // Always restore the checkered pattern
+          if (bgLayer && isTransparent) {
+            bgLayer.style.visibility = "";
+          }
+        }
 
         const mimeType = format === "jpg" ? "image/jpeg" : "image/png";
         const dataUrl = canvas.toDataURL(mimeType, format === "jpg" ? 0.95 : undefined);
