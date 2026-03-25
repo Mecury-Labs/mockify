@@ -38,6 +38,39 @@ function getScreenAspectRatio(config: DeviceConfig): number {
   return w / h;
 }
 
+/** Load an image from a URL and return it as an HTMLImageElement */
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new window.Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+    img.src = src;
+  });
+}
+
+/** Draw a rounded rectangle path on a canvas context */
+function roundedRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number
+) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
 /** Measure dimensions of an image file */
 function measureImage(file: File): Promise<{ width: number; height: number }> {
   return new Promise((resolve, reject) => {
@@ -345,6 +378,149 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
     },
     [current.name, canvasBg]
   );
+
+  // Video export handler
+  const handleVideoExport = useCallback(async () => {
+    const node = canvasRef.current;
+    if (!node || !screenContent || screenContent.type !== "video") return;
+
+    const videoEl = node.querySelector("video") as HTMLVideoElement | null;
+    if (!videoEl) return;
+
+    setExporting(true);
+    try {
+      const scale = 4;
+      const canvasSize = node.offsetWidth * scale;
+
+      // Create offscreen canvas
+      const offscreen = document.createElement("canvas");
+      offscreen.width = canvasSize;
+      offscreen.height = canvasSize;
+      const ctx = offscreen.getContext("2d")!;
+
+      // Resolve frame source
+      const resolvedColor = selectedColor ?? config.defaultColor;
+      const colorVariant = resolvedColor
+        ? config.colors.find((c) => c.name === resolvedColor)
+        : undefined;
+      const frameSrc = colorVariant?.frameSrc ?? config.frameSrc;
+
+      // Pre-load device frame image
+      const frameImg = await loadImage(frameSrc);
+
+      // Compute device layout (matching DOM layout)
+      const padding = canvasSize * 0.08;
+      const deviceW = canvasSize * BASE_DEVICE_RATIO * zoom;
+      const deviceH = deviceW * (config.framePngHeight / config.framePngWidth);
+
+      const deviceX = (canvasSize - deviceW) / 2;
+      let deviceY: number;
+      if (position === "top") {
+        deviceY = padding;
+      } else if (position === "bottom") {
+        deviceY = canvasSize - padding - deviceH;
+      } else {
+        deviceY = (canvasSize - deviceH) / 2;
+      }
+
+      // Screen area within device
+      const screenX = deviceX + deviceW * config.screenLeftFraction;
+      const screenY = deviceY + deviceH * config.screenTopFraction;
+      const screenW = deviceW * config.screenWidthFraction;
+      const screenH = deviceH * config.screenHeightFraction;
+      const screenRadius = deviceW * config.screenRadiusFraction;
+
+      // Pick a supported mimeType
+      const mimeType = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
+        ? "video/webm;codecs=vp9"
+        : "video/webm";
+
+      // Set up MediaRecorder on the offscreen canvas stream
+      const stream = offscreen.captureStream(60);
+      const recorder = new MediaRecorder(stream, {
+        mimeType,
+        videoBitsPerSecond: 16_000_000, // 16 Mbps
+      });
+
+      const chunks: Blob[] = [];
+      recorder.ondataavailable = (e) => {
+        if (e.data.size) chunks.push(e.data);
+      };
+
+      // Save video state and prepare for export
+      const wasLooping = videoEl.loop;
+      const wasPaused = videoEl.paused;
+      videoEl.loop = false;
+      videoEl.currentTime = 0;
+
+      await new Promise<void>((resolve) => {
+        videoEl.onseeked = () => resolve();
+      });
+
+      recorder.start();
+      await videoEl.play();
+
+      // Draw loop
+      const drawFrame = () => {
+        ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+        // Background
+        if (canvasBg) {
+          ctx.fillStyle = canvasBg;
+          ctx.fillRect(0, 0, canvasSize, canvasSize);
+        }
+
+        // Video frame in screen area (clipped to rounded rect)
+        ctx.save();
+        roundedRect(ctx, screenX, screenY, screenW, screenH, screenRadius);
+        ctx.clip();
+        ctx.drawImage(videoEl, screenX, screenY, screenW, screenH);
+        ctx.restore();
+
+        // Device frame overlay
+        ctx.drawImage(frameImg, deviceX, deviceY, deviceW, deviceH);
+
+        if (!videoEl.ended && !videoEl.paused) {
+          requestAnimationFrame(drawFrame);
+        } else {
+          recorder.stop();
+        }
+      };
+
+      requestAnimationFrame(drawFrame);
+
+      // Wait for recording to finish
+      await new Promise<void>((resolve) => {
+        recorder.onstop = () => resolve();
+      });
+
+      // Restore video state
+      videoEl.loop = wasLooping;
+      if (!wasPaused) {
+        videoEl.currentTime = 0;
+        videoEl.play();
+      }
+
+      // Download
+      const blob = new Blob(chunks, { type: "video/webm" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.download = `mockify-${current.name.toLowerCase().replace(/\s+/g, "-")}.webm`;
+      link.href = url;
+      link.click();
+      URL.revokeObjectURL(url);
+
+      track("export_mockup", { format: "webm", device: current.name });
+      toast.success("Exported as WebM video");
+    } catch {
+      toast.error("Video export failed", {
+        description: "Could not generate the video. Please try again.",
+      });
+    } finally {
+      setExporting(false);
+      setExportOpen(false);
+    }
+  }, [config, current.name, canvasBg, zoom, position, screenContent, selectedColor]);
 
   const shouldReduceMotion = useReducedMotion();
   const deviceWidth = canvasWidth * BASE_DEVICE_RATIO * zoom;
@@ -900,6 +1076,42 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
                       </span>
                     </button>
                   ))}
+
+                  {/* Video export — only shown when screen content is a video */}
+                  {screenContent?.type === "video" && (
+                    <>
+                      <div
+                        className="w-full"
+                        style={{ height: 1, backgroundColor: "#f0f0f0" }}
+                      />
+                      <button
+                        onClick={handleVideoExport}
+                        className="w-full text-left px-3 py-2.5 cursor-pointer"
+                        style={{
+                          transition: "background-color 150ms ease",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = "#fafafa";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = "transparent";
+                        }}
+                      >
+                        <span
+                          className="block text-xs font-medium"
+                          style={{ color: "#1d1d1f" }}
+                        >
+                          WebM Video
+                        </span>
+                        <span
+                          className="block text-[10px]"
+                          style={{ color: "#6e6e73" }}
+                        >
+                          Full video with device frame
+                        </span>
+                      </button>
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
