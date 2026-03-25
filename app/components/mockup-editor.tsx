@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { track } from "@vercel/analytics";
 import { toast } from "sonner";
-import { toPng, toJpeg, toSvg } from "html-to-image";
+import html2canvas from "html2canvas";
 import DeviceMockup, { type DeviceConfig } from "./device-mockup";
 import MockupCanvas, { type CanvasPosition } from "./mockup-canvas";
 import CodeModal from "./code-modal";
@@ -287,28 +287,25 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
 
   // Export handler
   const handleExport = useCallback(
-    async (format: "png" | "jpg" | "svg") => {
+    async (format: "png" | "jpg") => {
       const node = canvasRef.current;
       if (!node) return;
 
       setExporting(true);
       try {
-        let dataUrl: string;
-        const options = {
-          cacheBust: true,
-          pixelRatio: 2,
-        };
+        const canvas = await html2canvas(node, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: canvasBg ?? null,
+          logging: false,
+        });
 
-        if (format === "png") {
-          dataUrl = await toPng(node, options);
-        } else if (format === "jpg") {
-          dataUrl = await toJpeg(node, { ...options, quality: 0.95 });
-        } else {
-          dataUrl = await toSvg(node, options);
-        }
+        const mimeType = format === "jpg" ? "image/jpeg" : "image/png";
+        const dataUrl = canvas.toDataURL(mimeType, format === "jpg" ? 0.95 : undefined);
 
         const link = document.createElement("a");
-        link.download = `mockify-${current.name.toLowerCase().replace(/\s+/g, "-")}.${format === "jpg" ? "jpg" : format}`;
+        link.download = `mockify-${current.name.toLowerCase().replace(/\s+/g, "-")}.${format}`;
         link.href = dataUrl;
         link.click();
 
@@ -323,7 +320,7 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
         setExportOpen(false);
       }
     },
-    [current.name]
+    [current.name, canvasBg]
   );
 
   const shouldReduceMotion = useReducedMotion();
@@ -850,7 +847,6 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
                     [
                       { format: "png", label: "PNG", desc: "Lossless, transparent" },
                       { format: "jpg", label: "JPG", desc: "Compressed, smaller" },
-                      { format: "svg", label: "SVG", desc: "Vector, scalable" },
                     ] as const
                   ).map(({ format, label, desc }) => (
                     <button
