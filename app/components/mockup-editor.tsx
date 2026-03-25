@@ -311,7 +311,7 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
         let canvas: HTMLCanvasElement;
         try {
           canvas = await html2canvas(node, {
-            scale: 2,
+            scale: 4,
             useCORS: true,
             allowTaint: true,
             backgroundColor: bgColor,
@@ -325,7 +325,7 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
         }
 
         const mimeType = format === "jpg" ? "image/jpeg" : "image/png";
-        const dataUrl = canvas.toDataURL(mimeType, format === "jpg" ? 0.95 : undefined);
+        const dataUrl = canvas.toDataURL(mimeType, format === "jpg" ? 1.0 : undefined);
 
         const link = document.createElement("a");
         link.download = `mockify-${current.name.toLowerCase().replace(/\s+/g, "-")}.${format}`;
