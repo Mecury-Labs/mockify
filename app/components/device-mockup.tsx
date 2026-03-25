@@ -51,6 +51,64 @@ export interface DeviceConfig {
   defaultColor?: string;
 }
 
+/* ── Dynamic Island / Notch masking ── */
+
+type NotchType = "dynamic-island" | "notch";
+
+function getNotchType(config: DeviceConfig): NotchType | null {
+  if (config.statusBarSrc.includes("Notch")) return "notch";
+  return "dynamic-island";
+}
+
+/**
+ * Build a CSS mask that hides the Dynamic Island or Notch from the frame PNG.
+ * Returns mask-related inline styles, or an empty object when nothing to hide.
+ *
+ * The mask is an SVG with a white rect (show) and a black cutout (hide).
+ * We use mask-composite: subtract / -webkit-mask-composite: destination-out
+ * to punch a hole in the "show everything" base mask.
+ */
+function buildNotchMaskStyle(
+  config: DeviceConfig,
+  notchType: NotchType
+): React.CSSProperties {
+  const { framePngWidth: W, framePngHeight: H } = config;
+  const screenW = config.screenWidthFraction * W;
+  const screenH = config.screenHeightFraction * H;
+  const screenTop = config.screenTopFraction * H;
+
+  let cutX: number, cutY: number, cutW: number, cutH: number, rx: number, ry: number;
+
+  if (notchType === "dynamic-island") {
+    // DI pill: ~35% of screen width, ~3.6% of screen height, near top of screen
+    cutW = screenW * 0.35;
+    cutH = screenH * 0.036;
+    cutX = W / 2 - cutW / 2;
+    cutY = screenTop + screenH * 0.005;
+    rx = cutH / 2;
+    ry = rx;
+  } else {
+    // Notch: wider trapezoidal shape approximated as rounded rect
+    cutW = screenW * 0.55;
+    cutH = screenTop + screenH * 0.04;
+    cutX = W / 2 - cutW / 2;
+    cutY = 0;
+    rx = W * 0.018;
+    ry = rx;
+  }
+
+  const pillSvg = `url("data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${W} ${H}'><rect fill='white' x='${cutX}' y='${cutY}' width='${cutW}' height='${cutH}' rx='${rx}' ry='${ry}'/></svg>`
+  )}")`;
+
+  return {
+    WebkitMaskImage: `${pillSvg}, linear-gradient(white, white)`,
+    WebkitMaskComposite: "destination-out",
+    maskImage: `${pillSvg}, linear-gradient(white, white)`,
+    maskComposite: "exclude",
+  } as React.CSSProperties;
+}
+
 export interface DeviceMockupProps {
   /** Device configuration */
   device: DeviceConfig;
@@ -66,6 +124,8 @@ export interface DeviceMockupProps {
   className?: string;
   /** Color variant name. Uses defaultColor or frameSrc fallback if not set */
   color?: string;
+  /** Whether to hide the Dynamic Island / Notch cutout. Default: false */
+  hideDynamicIsland?: boolean;
 }
 
 export default function DeviceMockup({
@@ -76,6 +136,7 @@ export default function DeviceMockup({
   showStatusBar = true,
   className = "",
   color,
+  hideDynamicIsland = false,
 }: DeviceMockupProps) {
   // Resolve the frame source: color prop → defaultColor → frameSrc fallback
   const resolvedColor = color ?? device.defaultColor;
@@ -94,6 +155,11 @@ export default function DeviceMockup({
   const screenRadius = frameW * device.screenRadiusFraction;
 
   const statusBarH = screenH * device.statusBarHeightFraction;
+
+  // Build mask styles when hiding the DI/notch
+  const notchType = getNotchType(device);
+  const frameMaskStyle =
+    hideDynamicIsland && notchType ? buildNotchMaskStyle(device, notchType) : {};
 
   return (
     <div
@@ -168,6 +234,7 @@ export default function DeviceMockup({
           height: frameH,
           zIndex: 20,
           transform: "translateZ(0)",
+          ...frameMaskStyle,
         }}
       />
     </div>
