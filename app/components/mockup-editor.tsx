@@ -192,6 +192,9 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
   const [screenContent, setScreenContent] = useState<ScreenContent | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Status bar
+  const [showStatusBar, setShowStatusBar] = useState(true);
+
   // Code modal
   const [codeModalOpen, setCodeModalOpen] = useState(false);
 
@@ -561,7 +564,7 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
                     device={config}
                     width={deviceWidth}
                     color={selectedColor}
-                    showStatusBar={!screenContent}
+                    showStatusBar={showStatusBar && !screenContent}
                   >
                     {screenContent ? (
                       <div
@@ -755,6 +758,41 @@ export default function MockupEditor({ devices }: MockupEditorProps) {
             </div>
           </>
         )}
+
+        {/* Status bar toggle */}
+        <div
+          className="w-full"
+          style={{ height: 1, backgroundColor: "#f0f0f0" }}
+        />
+        <div className="px-4 py-3 flex items-center justify-between">
+          <span
+            className="text-[10px] font-medium uppercase tracking-wider"
+            style={{ color: "#a1a1aa" }}
+          >
+            Status Bar
+          </span>
+          <button
+            onClick={() => setShowStatusBar(!showStatusBar)}
+            className="relative cursor-pointer rounded-full"
+            style={{
+              width: 34,
+              height: 20,
+              backgroundColor: showStatusBar ? "#1d1d1f" : "#d1d1d6",
+              transition: "background-color 200ms ease",
+            }}
+          >
+            <span
+              className="absolute top-0.5 rounded-full bg-white"
+              style={{
+                width: 16,
+                height: 16,
+                left: showStatusBar ? 16 : 2,
+                transition: "left 200ms cubic-bezier(0.23, 1, 0.32, 1)",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.15)",
+              }}
+            />
+          </button>
+        </div>
 
         {/* Canvas background */}
         <div
